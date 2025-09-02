@@ -13,20 +13,6 @@ const Api = axios.create({
   },
 });
 
-// 🔹 Centralized Error Handling
-Api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError<any>) => {
-    if (error.response) {
-      console.error("❌ Server Error:", error.response.status, error.response.data);
-    } else if (error.request) {
-      console.error("❌ Network Error: No response from server");
-    } else {
-      console.error("❌ Unexpected Error:", error.message);
-    }
-    return Promise.reject(error);
-  }
-);
 
 
 export default Api;
