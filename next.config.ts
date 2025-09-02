@@ -8,3 +8,19 @@ const withPWA = require("next-pwa")({
 module.exports = withPWA({
   reactStrictMode: true,
 });
+
+
+module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+    ],
+  },
+};
