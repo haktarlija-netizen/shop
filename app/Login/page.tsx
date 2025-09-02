@@ -1,10 +1,9 @@
 
 'use client'
 
+'use client'
 
-
-
-
+'use client'
 
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
@@ -76,6 +75,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 to-gray-900 flex items-center justify-center p-4">
+      {/* Free Account Badge */}
       <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
         <div className="bg-green-600 text-white px-6 py-2 rounded-full shadow-lg text-lg font-bold animate-bounce">
           🎁 ফ্রি একাউন্ট
@@ -195,6 +195,7 @@ export default function AuthPage() {
     </div>
   );
 }
+
 
 
 
