@@ -32,8 +32,7 @@ const [getid, setDatas] = useState(null)
 
 
 
-
-  const handleSubmit = async (e) => {
+  const handleSubmit  = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -109,11 +108,7 @@ setUniid(number);
 
 
 
-  const getidnameid=()=>{
 
-
-
-  }
 
 
 
