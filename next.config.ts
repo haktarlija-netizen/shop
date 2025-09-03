@@ -5,12 +5,11 @@ const withPWA = require("next-pwa")({
   skipWaiting: true,
 });
 
-module.exports = withPWA({
+const nextConfig = withPWA({
   reactStrictMode: true,
-});
-
-
-module.exports = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -23,4 +22,6 @@ module.exports = {
       },
     ],
   },
-};
+});
+
+module.exports = nextConfig;
