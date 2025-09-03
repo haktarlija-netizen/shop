@@ -15,11 +15,6 @@ const geistMono = Geist_Mono({
 
 
 
-
-
-// app/page.tsx
-import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "My-shopings.com – Best Online Store in Bangladesh",
   description: "আমাদের ইকমার্সে পাবেন সেরা মানের পণ্য সাশ্রয়ী দামে। Fast Delivery, Secure Payment এবং ২৪/৭ কাস্টমার সার্পোট।",
