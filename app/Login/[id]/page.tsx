@@ -1,122 +1,12 @@
+import React from 'react'
 
-
-
-"use client";
-
-import { useEffect, useState } from "react";
-
-import { motion } from "framer-motion";
-import toast from "react-hot-toast";
-import Api from "../../api/Api";
-import { useParams } from "next/navigation";
-
-export default function AuthPage() {
-  const params = useParams<{ id: string }>();
-  const uerfree = params?.id;
-
-  const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [policestation, setPolicestation] = useState("");
-  const [phone, setPhone] = useState("");
-  const [unid, setUnid] = useState("");
-  const [userRefrar, setUserRefrar] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-
-    if (isLogin) {
-      try {
-        const res = await Api.post("/users_login", { email, password });
-        if (res.status === 201 || !res.data.user) {
-          toast.error("ইমেইল বা পাসওয়ার্ড সঠিক নয়");
-        } else {
-          localStorage.setItem("userData", JSON.stringify(res.data.user));
-          toast.success("লগইন সফল!");
-          window.location.href = "/";
-        }
-      } catch (err) {
-        toast.error("সার্ভার সমস্যা");
-      }
-    } else {
-      try {
-        const res = await Api.post("/add_user", {
-          name,
-          pass: password,
-          address: policestation,
-          email,
-          phone,
-          img: "logo_user.jpg",
-          unicid: unid,
-          referid: userRefrar,
-        });
-
-        if (res.data.message === true) {
-          toast.success("রেজিস্ট্রেশন সফল! এখন লগইন করুন");
-        } else {
-          toast.error(res.data.message || "রেজিস্ট্রেশন ব্যর্থ হয়েছে");
-        }
-      } catch {
-        toast.error("রেজিস্ট্রেশন ব্যর্থ হয়েছে");
-      }
-    }
-
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const number = Math.floor(10000000 + Math.random() * 90000000);
-    setUnid(number.toString());
-    if (uerfree) setUserRefrar(uerfree);
-  }, [uerfree]);
-
+function page() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-      <motion.div
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h2 className="text-2xl font-bold text-center mb-6">
-          {isLogin ? "Login" : "Register"}
-        </h2>
-
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {!isLogin && (
-            <>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="নাম" required />
-              <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="মোবাইল" required />
-              <input type="text" value={policestation} onChange={(e) => setPolicestation(e.target.value)} placeholder="ঠিকানা" required />
-            </>
-          )}
-
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ইমেইল" required />
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="পাসওয়ার্ড" required />
-
-          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded-lg">
-            {loading ? "Loading..." : isLogin ? "লগইন করুন" : "রেজিস্টার করুন"}
-          </button>
-        </form>
-
-        <div className="text-center mt-4">
-          {isLogin ? (
-            <button onClick={() => setIsLogin(false)} className="text-blue-500">
-              রেজিস্টার করুন
-            </button>
-          ) : (
-            <button onClick={() => setIsLogin(true)} className="text-blue-500">
-              লগইন করুন
-            </button>
-          )}
-        </div>
-      </motion.div>
-    </div>
-  );
+    <div>page</div>
+  )
 }
 
+export default page
 
 
 
