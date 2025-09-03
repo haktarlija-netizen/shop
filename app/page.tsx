@@ -161,7 +161,7 @@ export default function HomeShowcasePage() {
 
 
 
-const  hander_redires=(id)=>{
+const  hander_redires=(id: string)=>{
 if(id=='Login'){
 
 redirect('/Login');
