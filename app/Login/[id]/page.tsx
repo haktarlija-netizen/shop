@@ -1,9 +1,10 @@
 
 
+
 "use client";
 
 import { useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
+
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import Api from "../../api/Api";
