@@ -1,27 +1,19 @@
-// next.config.js
 const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
 });
 
-const nextConfig = withPWA({
+const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  eslint: { ignoreDuringBuilds: true },
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "i.pravatar.cc",
-      },
-      {
-        protocol: "https",
-        hostname: "picsum.photos",
-      },
+      { protocol: "https", hostname: "i.pravatar.cc" },
+      { protocol: "https", hostname: "picsum.photos" },
+      { protocol: "https", hostname: "images.unsplash.com" }, // needed for your product images
     ],
   },
-});
+};
 
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);
