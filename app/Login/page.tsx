@@ -40,7 +40,7 @@ export default function AuthPage() {
           toast.error("ইমেইল বা পাসওয়ার্ড সঠিক নয়");
         } else {
 
-          
+
           interface UserItem {
   id: number;
   name: string;
@@ -51,7 +51,7 @@ const selectedItems = res.data.user.slice(0, 3).map((item: UserItem) => ({
             id: item.id,
             name: item.name,
             img: item.img,
-            unid: item.uniqid,
+     
           }));
           localStorage.setItem("userData", JSON.stringify(selectedItems));
           toast.success("লগইন সফল হয়েছে!");
