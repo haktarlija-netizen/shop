@@ -102,7 +102,7 @@ const selectedItems = res.data.user.slice(0, 3).map((item: UserItem) => ({
  const number = Math.floor(10000000 + Math.random() * 90000000);
     console.log("Random 8-digit number:", number);
 
-setUniid(number);
+// setUniid(number);
  
 
 
