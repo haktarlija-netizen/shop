@@ -12,6 +12,7 @@ import Api from "./../api/Api";
 import Link from "next/link";
 
 
+
 export default function AuthPage() {
 
  
@@ -99,10 +100,19 @@ const selectedItems = res.data.user.slice(0, 3).map((item: UserItem) => ({
 
   useEffect(() => {
 
- const number = Math.floor(10000000 + Math.random() * 90000000);
-    console.log("Random 8-digit number:", number);
+//  const number = Math.floor(10000000 + Math.random() * 90000000);
+//     console.log("Random 8-digit number:", number);
 
 // setUniid(number);
+ 
+const generateNumberId = () => {
+      // 10 digit random number
+      return Math.floor(1000000 + Math.random() * 90000000).toString();
+    };
+
+    const id = generateNumberId();
+    console.log("Unique Number ID:", id);
+    setUniid(id);
  
 
 
