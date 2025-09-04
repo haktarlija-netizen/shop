@@ -27,7 +27,7 @@ export default function AuthPage() {
   const [userRefrar, setRefersID] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit  = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
     setLoading(true);
 
