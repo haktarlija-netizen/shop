@@ -39,7 +39,15 @@ export default function AuthPage() {
         if (res.data.user === 201 || res.data.user === null) {
           toast.error("ইমেইল বা পাসওয়ার্ড সঠিক নয়");
         } else {
-          const selectedItems = res.data.user.slice(0, 3).map((item) => ({
+
+          
+          interface UserItem {
+  id: number;
+  name: string;
+  img: string;
+}
+
+const selectedItems = res.data.user.slice(0, 3).map((item: UserItem) => ({
             id: item.id,
             name: item.name,
             img: item.img,
