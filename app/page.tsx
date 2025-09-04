@@ -118,6 +118,11 @@ function cn(...classes: Array<string | false | null | undefined>) {
 }
 
 export default function HomeShowcasePage() {
+
+
+
+
+  const [cojns, setCoins]=useState('0');
   const [dark, setDark] = useState(false);
   const [q, setQ] = useState("");
   const [activeCat, setActiveCat] = useState("all");
@@ -171,7 +176,20 @@ alert('logout');
 }
 }
 
+useEffect(() => {
 
+
+
+    
+ const userData = localStorage.getItem('coin');
+    if (userData) {
+      setCoins(userData|| '000.00  ');
+      
+    }
+
+
+
+}, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
@@ -208,6 +226,8 @@ alert('logout');
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+
+          {cojns}
 
           {/* Dark Mode Toggle */}
           <button
