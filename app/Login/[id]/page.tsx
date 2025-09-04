@@ -17,7 +17,7 @@ export default function AuthPage() {
 
   const uarams=useParams();
 
-  const uerfree=uarams.id;
+  const uerfree=uarams?.id;
  
 
 
@@ -28,7 +28,9 @@ export default function AuthPage() {
   const [policestation, setPolicStation] = useState("");
   const [phone, setphone] = useState("");
   const [unid, setUniid] = useState("");
-  const [userRefrar, setRefersID] = useState("");
+
+  const [userRefrar, setRefersID] = useState<string>("");
+
   const [loading, setLoading] = useState(false);
 
   const handleSubmit  = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -119,8 +121,11 @@ const generateNumberId = () => {
     console.log("Unique Number ID:", id);
     
     setUniid(id);
- 
+
+  if (typeof uerfree === "string") {
     setRefersID(uerfree);
+    }
+   
 
   }, [])
 
