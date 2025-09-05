@@ -122,7 +122,7 @@ export default function AllCategorySection() {
   }, []);
 
   // Click burst effect
-  const handleClick = (e) => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const x = e.clientX || e.touches[0].clientX;
     const y = e.clientY || e.touches[0].clientY;
     const burstParticles = [...Array(8)].map(() => ({
