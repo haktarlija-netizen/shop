@@ -10,10 +10,10 @@ import { motion } from "framer-motion";
 import { Search, Gift, Bell, Menu, Wallet, X, ScanQrCodeIcon } from "lucide-react";
 import Api from "../api/Api";
 import CountUp from "react-countup";
-import dynamic from "next/dynamic";
 
 
-const QrReader = dynamic(() => import("qrcode.react"), { ssr: false });
+
+
 
 export default function LobbyPage() {
   const [id, setUserid] = useState<any[]>([]);
@@ -31,16 +31,8 @@ export default function LobbyPage() {
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState<string | null>(null);
 
-  const handleScan = (data: string | null) => {
-    if (data) {
-      setScanResult(data);
-      setScanning(false);
-    }
-  };
 
-  const handleError = (err: any) => {
-    console.error(err);
-  };
+
 
   // Coin update interval
   useEffect(() => {
@@ -171,7 +163,7 @@ export default function LobbyPage() {
               <X className="w-5 h-5" />
             </button>
             <h2 className="text-xl font-bold mb-4 text-purple-400">
-              Withdraw Money
+              Withdraw Money    
             </h2>
             <input
               type="number"
