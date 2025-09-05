@@ -39,7 +39,7 @@ redirect('/earning-history');
 
   const [usersname, setUsername] = useState('');
 
-const [coissnss, setCoin] = useState(0);
+const [coissnss, setCoin] = useState<number>(0);
 
 
 
@@ -58,11 +58,11 @@ setInterval(() => {
 
 
 
- const userData2 = localStorage.getItem('coin');
-    if (userData2) {
-      setCoin(userData2|| '000.00 ');
-      
-    }
+ const userData2 = localStorage.getItem("coin");
+  if (userData2) {
+    setCoin(Number(userData2) || 0.0); // string → number কনভার্ট করা হলো
+  }
+  
 
 }, 3000);
 
