@@ -1391,7 +1391,7 @@ function Card({ children }: CardProps) {
   );
 };
 
-    function getDescription(id) {
+    function getDescription(id: string): string {
   switch (id) {
     case "account":
       return "Manage your account information, username and contact details.";
@@ -1421,7 +1421,7 @@ function Card({ children }: CardProps) {
 }
 
 
-function getDescriptionShort(id) {
+function getDescriptionShort(id: string): string {
   switch (id) {
     case "account":
       return "Account & contact info";
