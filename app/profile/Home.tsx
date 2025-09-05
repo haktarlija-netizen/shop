@@ -55,8 +55,15 @@ useEffect(() => {
 
  
 setInterval(() => {
-  const cojs=localStorage.getItem('coin');
-setCoin(cojs);
+
+
+
+ const userData = localStorage.getItem('coin');
+    if (userData) {
+      setCoin(userData|| '000.00 ');
+      
+    }
+
 }, 3000);
 
 
