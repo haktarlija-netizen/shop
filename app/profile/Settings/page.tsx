@@ -529,9 +529,7 @@ export default function SettingsPage() {
       });
   };
 
-  const handleSecuritySubmit = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleSecuritySubmit = (e: React.FormEvent) => {
     e?.preventDefault();
     if (securityData.password && securityData.password !== securityData.confirm) {
       setSavedMsg((s) => ({ ...s, security: "Passwords don't match" }));
@@ -588,7 +586,7 @@ export default function SettingsPage() {
         console.error("Error fetching user:", error);
       });
   }, [getid]);
-  
+
 
   // 🔥 তোমার return JSX আগের মতোই থাকবে (শুধু এই useState ফিক্স করা হয়েছে)
   return (
