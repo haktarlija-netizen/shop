@@ -58,9 +58,9 @@ setInterval(() => {
 
 
 
- const userData = localStorage.getItem('coin');
-    if (userData) {
-      setCoin(userData|| '000.00 ');
+ const userData2 = localStorage.getItem('coin');
+    if (userData2) {
+      setCoin(userData2|| '000.00 ');
       
     }
 
