@@ -407,6 +407,12 @@ export default function SettingsPage() {
     push: false,
   });
 
+  type CardProps = {
+  children: React.ReactNode;
+};
+
+
+
   const [accountData, setAccountData] = useState({ username: "", phone: "" });
   const [paymentsData, setPaymentsData] = useState({
     card: "",
@@ -1366,7 +1372,9 @@ export default function SettingsPage() {
 }
 
 // Card wrapper for form inputs
-function Card({ children }) {
+
+
+function Card({ children }: CardProps) {
   return (
     <div
       className="p-4 rounded-xl"
@@ -1381,9 +1389,9 @@ function Card({ children }) {
       {children}
     </div>
   );
-}
+};
 
-function getDescription(id) {
+    function getDescription(id) {
   switch (id) {
     case "account":
       return "Manage your account information, username and contact details.";
@@ -1411,6 +1419,7 @@ function getDescription(id) {
       return "";
   }
 }
+
 
 function getDescriptionShort(id) {
   switch (id) {
