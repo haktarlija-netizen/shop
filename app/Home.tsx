@@ -92,199 +92,9 @@ export default function AllCategorySection() {
     "#33FFAA",
   ];
 
-  // Window resize + scroll
-  useEffect(() => {
-    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-
-    const handleScroll = () => setScrollY(window.scrollY);
-    const handleMove = (e: MouseEvent | TouchEvent) => {
-      if ("touches" in e && e.touches.length > 0) {
-        setPointerPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-      } else if ("clientX" in e) {
-        setPointerPos({ x: e.clientX, y: e.clientY });
-      }
-    };
-    const handleResize = () =>
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("touchmove", handleMove);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("touchmove", handleMove);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Particles generate (1 বারই হবে)
-  const particles = useMemo<Particle[]>(() => {
-    return [...Array(25)].map((_, i) => {
-      const layerType = i % 3;
-      const sizeMap = [5, 3, 1.5];
-      const speedMap = [5, 8, 12];
-      const opacityMap = [1, 0.6, 0.3];
-      const parallaxMap = [15, 8, 4];
-      return {
-        top: Math.random() * 100,
-        left: Math.random() * 100,
-        size: Math.random() * sizeMap[layerType] + 1,
-        duration: Math.random() * speedMap[layerType] + 2,
-        delay: Math.random() * 2,
-        colorIndex: Math.floor(Math.random() * colors.length),
-        shapeIndex: Math.floor(Math.random() * shapes.length),
-        rotate: Math.random() * 360,
-        opacity: opacityMap[layerType],
-        parallax: parallaxMap[layerType],
-        id: i,
-      };
-    });
-  }, []);
-
-  // Burst effect
-  const handleClick = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
-    let x = 0,
-      y = 0;
-    if ("touches" in e && e.touches.length > 0) {
-      x = e.touches[0].clientX;
-      y = e.touches[0].clientY;
-    } else if ("clientX" in e) {
-      x = e.clientX;
-      y = e.clientY;
-    }
-
-    const burstParticles: Burst[] = [...Array(8)].map(() => ({
-      x,
-      y,
-      size: Math.random() * 5 + 2,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      id: Math.random(),
-    }));
-
-    setClickBursts((prev) => [...prev, ...burstParticles]);
-    setTimeout(
-      () => setClickBursts((prev) => prev.slice(burstParticles.length)),
-      1200
-    );
-  };
-
-  // Shape render
-  const renderShape = (p: Particle, i: number) => {
-    const offsetX =
-      ((pointerPos.x - windowSize.width / 2) / 50) * p.parallax;
-    const offsetY =
-      ((pointerPos.y - windowSize.height / 2) / 50) * p.parallax;
-    const dynamicColor =
-      colors[(p.colorIndex + Math.floor(Date.now() / 200)) % colors.length];
-    const dynamicShape =
-      shapes[(p.shapeIndex + Math.floor(Date.now() / 1000)) % shapes.length];
-
-    const commonStyle: React.CSSProperties = {
-      top: `${p.top}%`,
-      left: `${p.left}%`,
-      filter: `drop-shadow(0 0 10px ${dynamicColor})`,
-      opacity: p.opacity,
-      cursor: "grab",
-      position: "absolute",
-    };
-
-    const animationProps = {
-      y: [-5 + scrollY / 50 + offsetY, 5 + scrollY / 50 + offsetY],
-      x: [0 + offsetX, Math.random() * 20 - 10 + offsetX, 0 + offsetX],
-      rotate: [0, p.rotate, 0],
-      opacity: [p.opacity, p.opacity / 2, p.opacity],
-    };
-
-    const transitionProps = {
-      duration: p.duration,
-      repeat: Infinity,
-      repeatType: "mirror" as const,
-      delay: p.delay,
-    };
-
-    switch (dynamicShape) {
-      case "circle":
-        return (
-          <motion.div
-            key={i}
-            drag
-            dragConstraints={{
-              top: 0,
-              left: 0,
-              right: windowSize.width,
-              bottom: windowSize.height,
-            }}
-            style={{
-              width: p.size,
-              height: p.size,
-              borderRadius: "50%",
-              backgroundColor: dynamicColor,
-              ...commonStyle,
-            }}
-            animate={animationProps}
-            transition={transitionProps}
-          />
-        );
-      case "star":
-        return (
-          <motion.div
-            key={i}
-            drag
-            dragConstraints={{
-              top: 0,
-              left: 0,
-              right: windowSize.width,
-              bottom: windowSize.height,
-            }}
-            style={{
-              width: 0,
-              height: 0,
-              borderLeft: `${p.size}px solid transparent`,
-              borderRight: `${p.size}px solid transparent`,
-              borderBottom: `${p.size * 2}px solid ${dynamicColor}`,
-              ...commonStyle,
-            }}
-            animate={animationProps}
-            transition={transitionProps}
-          />
-        );
-      case "triangle":
-        return (
-          <motion.div
-            key={i}
-            drag
-            dragConstraints={{
-              top: 0,
-              left: 0,
-              right: windowSize.width,
-              bottom: windowSize.height,
-            }}
-            style={{
-              width: 0,
-              height: 0,
-              borderLeft: `${p.size}px solid transparent`,
-              borderRight: `${p.size}px solid transparent`,
-              borderTop: `${p.size * 2}px solid ${dynamicColor}`,
-              ...commonStyle,
-            }}
-            animate={animationProps}
-            transition={transitionProps}
-          />
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <div
-      onClick={handleClick}
-      onTouchStart={handleClick}
       className="relative min-h-screen flex flex-col items-center justify-center p-6 bg-black overflow-hidden"
     >
       {/* Background Effects */}
@@ -315,13 +125,11 @@ export default function AllCategorySection() {
             />
 
             {/* Particles */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {particles.map((p, i) => renderShape(p, i))}
-            </div>
+      
 
             {/* Burst effect */}
             <AnimatePresence>
-              {clickBursts.map((burst) => (
+              {categories.map((burst) => (
                 <motion.div
                   key={burst.id}
                   initial={{ x: burst.x, y: burst.y, opacity: 1, scale: 1 }}
