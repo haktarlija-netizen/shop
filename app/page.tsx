@@ -22,7 +22,8 @@ import {
   ShieldCheck,
   Star,
   Flame,
-   LogIn, LogOut 
+   LogIn, LogOut, 
+   User
 } from "lucide-react";
 import {
   AreaChart,
@@ -173,6 +174,9 @@ const  hander_redires=(id: string)=>{
 if(id=='Login'){
 
 redirect('/Login');
+}else if(id=='profile'){
+
+redirect('/profile');
 }else{
 
 alert('logout');
@@ -261,6 +265,13 @@ useEffect(() => {
                   transition={{ duration: 0.2 }}
                   className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-2"
                 >
+
+
+                    <button onClick={()=>hander_redires('profile')}  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                    <User size={16}  /> profile
+                  </button>
+
+
                   <button onClick={()=>hander_redires('Login')}  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
                     <LogIn size={16}  /> Login
                   </button>
