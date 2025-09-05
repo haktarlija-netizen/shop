@@ -28,12 +28,16 @@ export default function AllCategorySection() {
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
 
-    const handleScroll = () => setScrollY(window.scrollY);
-    const handleMove = async (e: React.MouseEvent<HTMLButtonElement>) => 
-      setPointerPos({
-        x: e.clientX || e.touches[0].clientX,
-        y: e.clientY || e.touches[0].clientY,
-      });
+
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if ("touches" in e && e.touches.length > 0) {
+      setPointerPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    } else if ("clientX" in e) {
+      setPointerPos({ x: e.clientX, y: e.clientY });
+    }
+  };
+  
     const handleResize = () =>
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
 
