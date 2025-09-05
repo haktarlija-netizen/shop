@@ -232,7 +232,8 @@ id:getid,
 
 
 
-  const handleSecuritySubmit = (e) => {
+  const handleSecuritySubmit = ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+) => {
     e?.preventDefault();
     if (securityData.password && securityData.password !== securityData.confirm) {
       setSavedMsg((s) => ({ ...s, security: "Passwords don't match" }));
@@ -303,15 +304,19 @@ id:getid,
 
 
   };
-  const handleNotificationsSubmit = (e) => {
+  const handleNotificationsSubmit =  ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+) => {
+ 
     e?.preventDefault();
     fakeSave("notifications", notificationsData);
   };
-  const handleAccountSubmit = (e) => {
+  const handleAccountSubmit = ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+) => {
     e?.preventDefault();
     fakeSave("account", accountData);
   };
-  const handlePaymentsSubmit = (e) => {
+  const handlePaymentsSubmit =  ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+) => {
     e?.preventDefault();
     fakeSave("payments", paymentsData);
   };
