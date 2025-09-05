@@ -29,7 +29,7 @@ export default function AllCategorySection() {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
 
     const handleScroll = () => setScrollY(window.scrollY);
-    const handleMove = (e) =>
+    const handleMove = async (e: React.MouseEvent<HTMLButtonElement>) => 
       setPointerPos({
         x: e.clientX || e.touches[0].clientX,
         y: e.clientY || e.touches[0].clientY,
