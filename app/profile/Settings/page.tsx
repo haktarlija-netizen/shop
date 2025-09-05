@@ -181,7 +181,7 @@ useEffect(() => {
 
 
   // ফর্ম হ্যান্ডলার
-  const handleProfileSubmit = (e) => {
+  const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
    
 
