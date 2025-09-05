@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, ReactNode  } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, Search, BarChart2, Settings, Bell,ScanIcon ,User, Lock, CreditCard, LogOut } from "lucide-react";
 import { redirect } from "next/navigation";
