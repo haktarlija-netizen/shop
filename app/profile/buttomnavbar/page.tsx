@@ -138,7 +138,14 @@ export default function ColorfulBottomNavbar() {
   );
 }
 
-function NavItem({ icon, label, gradient }) {
+type NavItemProps = {
+  icon: ReactNode;       // যেকোনো JSX আইকন বা React এলিমেন্ট
+  label: string;         // লেবেল টেক্সট
+  gradient?: string;     // অপশনাল, যদি না দেন তবে undefined হবে
+};
+
+function NavItem({ icon, label, gradient }: NavItemProps) {
+
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
