@@ -41,13 +41,13 @@ export default function AllCategorySection() {
     const handleResize = () =>
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
 
-    window.addEventListener("scroll", handleScroll);
+   
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("touchmove", handleMove);
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("touchmove", handleMove);
       window.removeEventListener("resize", handleResize);
