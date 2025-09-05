@@ -47,7 +47,14 @@ export default function Home() {
             </p>
             <div className="my-6">
               {/* ✅ এখন ফোন নম্বর থেকে কিউআর কোড বানাবে */}
-              <QRCodeSVG />
+              <QRCodeSVG
+            value="https://myshopings.com/app" // ✅ তোমার লিংক বসাও
+            size={128}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            level="H"
+       
+          />
               
             </div>
             <div className="italic mt-4">Yours Sincerely</div>
