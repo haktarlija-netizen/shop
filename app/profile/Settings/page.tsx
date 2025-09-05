@@ -407,9 +407,6 @@ export default function SettingsPage() {
     push: false,
   });
 
-  type CardProps = {
-  children: React.ReactNode;
-};
 
 
 
@@ -1372,6 +1369,9 @@ export default function SettingsPage() {
 }
 
 // Card wrapper for form inputs
+  type CardProps = {
+  children: React.ReactNode;
+};
 
 
 function Card({ children }: CardProps) {
