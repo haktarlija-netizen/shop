@@ -82,9 +82,9 @@ export default function UserProfileMenu({
         <div className="relative w-10 h-10">
           <Image
             src={`http://localhost:8000/profile_users/${img}`}
-  
-            fill
-            className="rounded-full object-cover border border-gray-300"
+   alt="Profile image"
+  fill
+  className="object-cover rounded-full"
           />
         </div>
         <span className="font-medium text-sm text-gray-800 dark:text-gray-200">
