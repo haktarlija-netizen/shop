@@ -5,6 +5,9 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence,  } from "framer-motion";
+import Homepages from './Home'
+import Footers from './footers/page'
+
 import {
   Home,
   LineChart as LineIcon,
@@ -349,6 +352,8 @@ useEffect(() => {
           </motion.div>
         </div>
       </section>
+<Homepages />
+      <Footers />
 
       {/* Quick Apps & Products & CTA & Footer */}
       {/* Tailwind only components like above */}
