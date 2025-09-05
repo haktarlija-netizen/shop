@@ -421,12 +421,12 @@ id:getid,
         <div className="pt-2 border-t border-gray-200/10">
           <button
             className="w-full p-3 rounded-full bg-gradient-to-r from-pink-500 to-indigo-500 shadow-md hover:scale-[1.02] transition-transform flex items-center justify-center gap-3"
-      onClick={(e) => {
-    handleProfileSubmit(e);
-    handleAccountSubmit(e);
-    handleNotificationsSubmit(e);
-  }}
->
+         onClick={async () => {
+       if (handleProfileSubmit) await handleProfileSubmit();
+      if (handleAccountSubmit) await handleAccountSubmit();
+      if (handleNotificationsSubmit) await handleNotificationsSubmit();
+    }}
+  >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M12 16v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
