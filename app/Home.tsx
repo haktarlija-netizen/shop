@@ -131,7 +131,7 @@ export default function AllCategorySection() {
             <AnimatePresence>
               {categories.map((burst) => (
                 <motion.div
-                  key={burst.id}
+                  
                   initial={{ x: burst.x, y: burst.y, opacity: 1, scale: 1 }}
                   animate={{
                     x: burst.x + (Math.random() - 0.5) * 100,
