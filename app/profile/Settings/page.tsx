@@ -6,6 +6,352 @@
 
 
 
+// "use client";
+
+// import React, { useEffect, useState } from "react";
+// import {
+//   User,
+//   Lock,
+//   Bell,
+//   Palette,
+//   Globe,
+//   Shield,
+//   HelpCircle,
+//   LogOut,
+//   Sun,
+//   Moon,
+//   CreditCard,
+//   Link as LinkIcon,
+//   Info,
+//   Menu,
+//   X,
+  
+
+// EyeOff,
+// Eye,
+// Wallet,
+// Landmark,
+
+// } from "lucide-react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import Api from "@/app/api/Api";
+// import { MdNoAccounts } from "react-icons/md";
+
+// // Mail,
+// // Phone,
+// // MapPin,
+// // Settings,
+// // Edit2,
+
+// // Star,
+
+// export default function SettingsPage() {
+
+
+
+
+//   const [activeTab, setActiveTab] = useState("account");
+//   const [darkMode, setDarkMode] = useState(true);
+//   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+//   const [getid,setUserid]=useState(null);
+
+//   // বিভিন্ন সেকশনের ডেটা স্টেট
+//   const [profileData, setProfileData] = useState({ name: "",  address:'', phone:'', nid:'',  date_of_bird:'', bio: "", email: "" });
+//   const [securityData, setSecurityData] = useState({ password: "", confirm: "", oldpassword:'', twoFA: false });
+//   const [notificationsData, setNotificationsData] = useState({ email: true, push: false });
+//   const [accountData, setAccountData] = useState({ username: "", phone: "" });
+//   const [paymentsData, setPaymentsData] = useState({ card: "", expiry: "", cvc: "" });
+
+//   // সেভিং এবং সেভড মেসেজ স্টেট
+//   const [saving, setSaving] = useState({});
+//   const [savedMsg, setSavedMsg] = useState({});
+
+// const [usedata, setDatas] = useState([])
+
+
+//   const [showPassword1, setShowPassword1] = useState(false);
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [showConfirm, setShowConfirm] = useState(false);
+
+
+
+
+
+
+
+// const [step, setStep] = useState(1);
+//   const [selectedPayment, setSelectedPayment] = useState("bank");
+//   const [accountNumber, setAccountNumber] = useState("");
+
+
+//   const paymentOptions = [
+//     { id: "bkash", name: "bKash", icon: <Wallet size={24} className="text-pink-500" />, desc: "Send money easily with bKash" },
+//     { id: "nagad", name: "Nagad", icon: <Wallet size={24} className="text-orange-500" />, desc: "Fast and secure Nagad payments" },
+//     { id: "bank", name: "Bank Transfer", icon: <Landmark size={24} className="text-blue-500" />, desc: "Pay directly with your bank account" },
+//   ];
+  
+//   const handleNext = () => setStep(2);
+//   const handleBack = () => setStep(1);
+//   const handleConfirm = () => {
+//     if(!accountNumber) return alert("Please enter your account/number");
+
+
+
+
+//     Api.post(`/userdata_UPDATE`,{
+
+
+// accountNumber:accountNumber,
+// bank:selectedPayment,
+// id:getid,
+// action:'payment',
+
+
+//     }) // Laravel API URL
+//         .then(response => {
+//       //  
+//       alert(response.data.data);
+//      console.log(getid+ 'userid  profile Setting optin get id        ====================================');
+//      console.log(response.data.data);
+//      console.log('====================================');
+//         })
+//         .catch(error => {
+//           console.error('Error Settiong profiles  fetching user:', error);
+       
+//  alert(error+'error ');
+//         })
+
+
+
+
+
+//     // alert(`Payment Method: ${selectedPayment}\nAccount/Number: ${accountNumber}`);
+//   };
+
+
+
+
+// useEffect(() => {
+
+
+//    const userData = JSON.parse(localStorage.getItem('userData') || '[]');
+//     if (userData[0]) {
+//       setUserid(userData[0].id || 'no name fine');
+      
+//     }
+
+
+// }, [getid])
+
+
+
+
+//   useEffect(() => {
+//     const root = window.document.documentElement;
+//     if (darkMode) root.classList.add("dark");
+//     else root.classList.remove("dark");
+//   }, [darkMode]);
+
+//   const menuItems = [
+//     { id: "account", label: "Account Info", icon: <Info /> },
+//     { id: "profile", label: "Profile", icon: <User /> },
+//     { id: "security", label: "Security", icon: <Shield /> },
+//     { id: "privacy", label: "Privacy", icon: <Lock /> },
+//     { id: "notifications", label: "Notifications", icon: <Bell /> },
+//     { id: "appearance", label: "Appearance", icon: <Palette /> },
+//     { id: "language", label: "Language", icon: <Globe /> },
+//     { id: "payments", label: "Payments", icon: <CreditCard /> },
+//     { id: "apps", label: "Connected Apps", icon: <LinkIcon /> },
+//     { id: "help", label: "Help & Support", icon: <HelpCircle /> },
+//     { id: "logout", label: "Logout", icon: <LogOut /> },
+//   ];
+
+//   // সেভ ফাংশন (সিমুলেশন)
+//   function fakeSave(section: string, data: Record<string, any>) {
+//     setSaving((s) => ({ ...s, [section]: true }));
+//     setSavedMsg((s) => ({ ...s, [section]: "" }));
+//     setTimeout(() => {
+//       console.log("Saved", section, data);
+//       setSaving((s) => ({ ...s, [section]: false }));
+//       setSavedMsg((s) => ({ ...s, [section]: "Saved successfully" }));
+//       setTimeout(() => setSavedMsg((s) => ({ ...s, [section]: "" })), 2500);
+//     }, 900);
+//   }
+
+
+//   // ফর্ম হ্যান্ডলার
+//   const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e?.preventDefault();
+   
+
+//   // const [profileData, setProfileData] = useState({ name: "", phone:'', nid:'',  date:'', bio: "", email: "" });
+
+  
+// var alldata={
+// name:profileData.name,
+// phone:profileData.phone,
+// email:profileData.email,
+// nid:profileData.nid,
+// pass:profileData.bio,
+// dateofbirth:profileData.date_of_bird,
+// action:'updateall-data',
+// address:profileData.address,
+// id:getid,
+// }
+
+
+
+
+
+//         Api.post(`/userdata_UPDATE`,alldata) // Laravel API URL
+//         .then(response => {
+//       //     setDatas(response.data.data);
+//       // setProfileData(response.data.data);
+
+//   fakeSave("profile", profileData);
+
+
+
+//      console.log(getid+ 'userid  profile Setting optin get id        ====================================');
+//      console.log(response.data.data);
+//      console.log('====================================');
+//         })
+//         .catch(error => {
+//           console.error('Error Settiong profiles  fetching user:', error);
+//        alert('error password or nid');
+ 
+//         })
+
+
+
+
+
+//   };
+
+
+
+
+//   const handleSecuritySubmit = ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+// ) => {
+//     e?.preventDefault();
+//     if (securityData.password && securityData.password !== securityData.confirm) {
+//       setSavedMsg((s) => ({ ...s, security: "Passwords don't match" }));
+//       setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
+     
+  
+    
+    
+//     }else{
+
+
+
+// // const [securityData, setSecurityData] = useState({ password: "", confirm: "", oldpassword:'', twoFA: false });
+
+  
+// var alldata={
+
+// oldpass:securityData.oldpassword,
+// pass:securityData.password,
+
+
+// action:'updateall-pass',
+
+// id:getid,
+// }
+
+
+
+
+
+//         Api.post(`/userdata_UPDATE`,alldata) // Laravel API URL
+//         .then(response => {
+//       //     setDatas(response.data.data);
+//       // setProfileData(response.data.data);
+
+//   fakeSave("profile", profileData);
+
+
+
+//      console.log(getid+ 'userid  profile Setting optin get id        ====================================');
+//      console.log(response.data.data);
+//          setSavedMsg((s) => ({ ...s, security: response.data.data }));
+
+//            setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
+//         })
+//         .catch(error => {
+//           console.error('Error Settiong profiles  fetching user:', error);
+//         setSavedMsg((s) => ({ ...s, security: "your password update error   " }));
+
+//            setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
+
+ 
+//         })
+
+
+
+//     }
+
+
+
+
+
+
+
+
+
+
+
+
+//   };
+//   const handleNotificationsSubmit =(e?: React.FormEvent) => {
+ 
+//     e?.preventDefault();
+//     fakeSave("notifications", notificationsData);
+//   };
+//   const handleAccountSubmit = (e?: React.FormEvent) => {
+//     e?.preventDefault();
+//     fakeSave("account", accountData);
+//   };
+//   const handlePaymentsSubmit =(e?: React.FormEvent) => {
+//     e?.preventDefault();
+//     fakeSave("payments", paymentsData);
+//   };
+
+
+
+
+
+
+
+//   useEffect(() => {
+  
+
+
+//     Api.get(`/all_users/${getid}`) // Laravel API URL
+//         .then(response => {
+//           setDatas(response.data.data);
+//       setProfileData(response.data.data);
+//      console.log(getid+ '  profile Setting optin get id        ====================================');
+//      console.log(response.data.data);
+//      console.log('====================================');
+//         })
+//         .catch(error => {
+//           console.error('Error Settiong profiles  fetching user:', error);
+       
+ 
+//         })
+
+
+
+
+
+//   }, [getid]);
+
+
+//   return (
+
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -25,127 +371,109 @@ import {
   Info,
   Menu,
   X,
-  
-
-EyeOff,
-Eye,
-Wallet,
-Landmark,
-
+  EyeOff,
+  Eye,
+  Wallet,
+  Landmark,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Api from "@/app/api/Api";
-import { MdNoAccounts } from "react-icons/md";
-
-// Mail,
-// Phone,
-// MapPin,
-// Settings,
-// Edit2,
-
-// Star,
 
 export default function SettingsPage() {
-
-
-
-
   const [activeTab, setActiveTab] = useState("account");
   const [darkMode, setDarkMode] = useState(true);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [getid, setUserid] = useState<string | null>(null);
 
-  const [getid,setUserid]=useState(null);
+  const [profileData, setProfileData] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    nid: "",
+    date_of_bird: "",
+    bio: "",
+    email: "",
+  });
 
-  // বিভিন্ন সেকশনের ডেটা স্টেট
-  const [profileData, setProfileData] = useState({ name: "",  address:'', phone:'', nid:'',  date_of_bird:'', bio: "", email: "" });
-  const [securityData, setSecurityData] = useState({ password: "", confirm: "", oldpassword:'', twoFA: false });
-  const [notificationsData, setNotificationsData] = useState({ email: true, push: false });
+  const [securityData, setSecurityData] = useState({
+    password: "",
+    confirm: "",
+    oldpassword: "",
+    twoFA: false,
+  });
+
+  const [notificationsData, setNotificationsData] = useState({
+    email: true,
+    push: false,
+  });
+
   const [accountData, setAccountData] = useState({ username: "", phone: "" });
-  const [paymentsData, setPaymentsData] = useState({ card: "", expiry: "", cvc: "" });
+  const [paymentsData, setPaymentsData] = useState({
+    card: "",
+    expiry: "",
+    cvc: "",
+  });
 
-  // সেভিং এবং সেভড মেসেজ স্টেট
-  const [saving, setSaving] = useState({});
-  const [savedMsg, setSavedMsg] = useState({});
+  // 🔥 FIX: এখন থেকে টাইপ সঠিকভাবে ডিফাইন করা হলো
+  const [saving, setSaving] = useState<Record<string, boolean>>({});
+  const [savedMsg, setSavedMsg] = useState<Record<string, string>>({});
 
-const [usedata, setDatas] = useState([])
-
-
+  const [usedata, setDatas] = useState<any>([]);
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-
-
-
-
-
-
-const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1);
   const [selectedPayment, setSelectedPayment] = useState("bank");
   const [accountNumber, setAccountNumber] = useState("");
 
-
   const paymentOptions = [
-    { id: "bkash", name: "bKash", icon: <Wallet size={24} className="text-pink-500" />, desc: "Send money easily with bKash" },
-    { id: "nagad", name: "Nagad", icon: <Wallet size={24} className="text-orange-500" />, desc: "Fast and secure Nagad payments" },
-    { id: "bank", name: "Bank Transfer", icon: <Landmark size={24} className="text-blue-500" />, desc: "Pay directly with your bank account" },
+    {
+      id: "bkash",
+      name: "bKash",
+      icon: <Wallet size={24} className="text-pink-500" />,
+      desc: "Send money easily with bKash",
+    },
+    {
+      id: "nagad",
+      name: "Nagad",
+      icon: <Wallet size={24} className="text-orange-500" />,
+      desc: "Fast and secure Nagad payments",
+    },
+    {
+      id: "bank",
+      name: "Bank Transfer",
+      icon: <Landmark size={24} className="text-blue-500" />,
+      desc: "Pay directly with your bank account",
+    },
   ];
-  
+
   const handleNext = () => setStep(2);
   const handleBack = () => setStep(1);
   const handleConfirm = () => {
-    if(!accountNumber) return alert("Please enter your account/number");
+    if (!accountNumber) return alert("Please enter your account/number");
 
-
-
-
-    Api.post(`/userdata_UPDATE`,{
-
-
-accountNumber:accountNumber,
-bank:selectedPayment,
-id:getid,
-action:'payment',
-
-
-    }) // Laravel API URL
-        .then(response => {
-      //  
-      alert(response.data.data);
-     console.log(getid+ 'userid  profile Setting optin get id        ====================================');
-     console.log(response.data.data);
-     console.log('====================================');
-        })
-        .catch(error => {
-          console.error('Error Settiong profiles  fetching user:', error);
-       
- alert(error+'error ');
-        })
-
-
-
-
-
-    // alert(`Payment Method: ${selectedPayment}\nAccount/Number: ${accountNumber}`);
+    Api.post(`/userdata_UPDATE`, {
+      accountNumber,
+      bank: selectedPayment,
+      id: getid,
+      action: "payment",
+    })
+      .then((response) => {
+        alert(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error setting profile:", error);
+        alert(error + " error ");
+      });
   };
 
-
-
-
-useEffect(() => {
-
-
-   const userData = JSON.parse(localStorage.getItem('userData') || '[]');
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("userData") || "[]");
     if (userData[0]) {
-      setUserid(userData[0].id || 'no name fine');
-      
+      setUserid(userData[0].id || "no name fine");
     }
-
-
-}, [getid])
-
-
-
+  }, [getid]);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -167,8 +495,8 @@ useEffect(() => {
     { id: "logout", label: "Logout", icon: <LogOut /> },
   ];
 
-  // সেভ ফাংশন (সিমুলেশন)
-  function fakeSave(section: string, data: Record<string, any>) {
+  // Fake save
+  const fakeSave = (section: string, data: Record<string, any>) => {
     setSaving((s) => ({ ...s, [section]: true }));
     setSavedMsg((s) => ({ ...s, [section]: "" }));
     setTimeout(() => {
@@ -177,178 +505,92 @@ useEffect(() => {
       setSavedMsg((s) => ({ ...s, [section]: "Saved successfully" }));
       setTimeout(() => setSavedMsg((s) => ({ ...s, [section]: "" })), 2500);
     }, 900);
-  }
-
-
-  // ফর্ম হ্যান্ডলার
-  const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e?.preventDefault();
-   
-
-  // const [profileData, setProfileData] = useState({ name: "", phone:'', nid:'',  date:'', bio: "", email: "" });
-
-  
-var alldata={
-name:profileData.name,
-phone:profileData.phone,
-email:profileData.email,
-nid:profileData.nid,
-pass:profileData.bio,
-dateofbirth:profileData.date_of_bird,
-action:'updateall-data',
-address:profileData.address,
-id:getid,
-}
-
-
-
-
-
-        Api.post(`/userdata_UPDATE`,alldata) // Laravel API URL
-        .then(response => {
-      //     setDatas(response.data.data);
-      // setProfileData(response.data.data);
-
-  fakeSave("profile", profileData);
-
-
-
-     console.log(getid+ 'userid  profile Setting optin get id        ====================================');
-     console.log(response.data.data);
-     console.log('====================================');
-        })
-        .catch(error => {
-          console.error('Error Settiong profiles  fetching user:', error);
-       alert('error password or nid');
- 
-        })
-
-
-
-
-
   };
 
+  // Profile submit
+  const handleProfileSubmit = async (e: React.FormEvent) => {
+    e?.preventDefault();
 
+    const alldata = {
+      ...profileData,
+      pass: profileData.bio,
+      dateofbirth: profileData.date_of_bird,
+      action: "updateall-data",
+      id: getid,
+    };
 
+    Api.post(`/userdata_UPDATE`, alldata)
+      .then(() => {
+        fakeSave("profile", profileData);
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+        alert("error password or nid");
+      });
+  };
 
-  const handleSecuritySubmit = ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-) => {
+  const handleSecuritySubmit = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     e?.preventDefault();
     if (securityData.password && securityData.password !== securityData.confirm) {
       setSavedMsg((s) => ({ ...s, security: "Passwords don't match" }));
       setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
-     
-  
-    
-    
-    }else{
+    } else {
+      const alldata = {
+        oldpass: securityData.oldpassword,
+        pass: securityData.password,
+        action: "updateall-pass",
+        id: getid,
+      };
 
-
-
-// const [securityData, setSecurityData] = useState({ password: "", confirm: "", oldpassword:'', twoFA: false });
-
-  
-var alldata={
-
-oldpass:securityData.oldpassword,
-pass:securityData.password,
-
-
-action:'updateall-pass',
-
-id:getid,
-}
-
-
-
-
-
-        Api.post(`/userdata_UPDATE`,alldata) // Laravel API URL
-        .then(response => {
-      //     setDatas(response.data.data);
-      // setProfileData(response.data.data);
-
-  fakeSave("profile", profileData);
-
-
-
-     console.log(getid+ 'userid  profile Setting optin get id        ====================================');
-     console.log(response.data.data);
-         setSavedMsg((s) => ({ ...s, security: response.data.data }));
-
-           setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
+      Api.post(`/userdata_UPDATE`, alldata)
+        .then((response) => {
+          fakeSave("profile", profileData);
+          setSavedMsg((s) => ({ ...s, security: response.data.data }));
+          setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
         })
-        .catch(error => {
-          console.error('Error Settiong profiles  fetching user:', error);
-        setSavedMsg((s) => ({ ...s, security: "your password update error   " }));
-
-           setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
-
- 
-        })
-
-
-
+        .catch((error) => {
+          console.error("Error updating password:", error);
+          setSavedMsg((s) => ({
+            ...s,
+            security: "your password update error",
+          }));
+          setTimeout(() => setSavedMsg((s) => ({ ...s, security: "" })), 5500);
+        });
     }
-
-
-
-
-
-
-
-
-
-
-
-
   };
-  const handleNotificationsSubmit =(e?: React.FormEvent) => {
- 
+
+  // 🔥 FIXED FUNCTIONS
+  const handleNotificationsSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     fakeSave("notifications", notificationsData);
   };
+
   const handleAccountSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     fakeSave("account", accountData);
   };
-  const handlePaymentsSubmit =(e?: React.FormEvent) => {
+
+  const handlePaymentsSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     fakeSave("payments", paymentsData);
   };
 
-
-
-
-
-
-
   useEffect(() => {
+    if (!getid) return;
+    Api.get(`/all_users/${getid}`)
+      .then((response) => {
+        setDatas(response.data.data);
+        setProfileData(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+      });
+  }, [getid]);
   
 
-
-    Api.get(`/all_users/${getid}`) // Laravel API URL
-        .then(response => {
-          setDatas(response.data.data);
-      setProfileData(response.data.data);
-     console.log(getid+ '  profile Setting optin get id        ====================================');
-     console.log(response.data.data);
-     console.log('====================================');
-        })
-        .catch(error => {
-          console.error('Error Settiong profiles  fetching user:', error);
-       
- 
-        })
-
-
-
-
-
-  }, [getid]);
-
-
+  // 🔥 তোমার return JSX আগের মতোই থাকবে (শুধু এই useState ফিক্স করা হয়েছে)
   return (
     <div
       className={`min-h-screen flex bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-pink-600/10 via-purple-700/6 to-blue-500/6 dark:from-black dark:via-gray-900 dark:to-black transition-colors duration-700`}
