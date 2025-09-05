@@ -128,32 +128,7 @@ export default function AllCategorySection() {
       
 
             {/* Burst effect */}
-            <AnimatePresence>
-              {categories.map((burst) => (
-                <motion.div
-                  
-                  initial={{ x: burst.x, y: burst.y, opacity: 1, scale: 1 }}
-                  animate={{
-                    x: burst.x + (Math.random() - 0.5) * 100,
-                    y: burst.y + (Math.random() - 0.5) * 100,
-                    opacity: 0,
-                    scale: 0,
-                  }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1 }}
-                >
-                  <div
-                    style={{
-                      width: burst.size,
-                      height: burst.size,
-                      backgroundColor: burst.color,
-                      borderRadius: "50%",
-                      filter: `drop-shadow(0 0 6px ${burst.color})`,
-                    }}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+        
 
             {/* Category Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 p-4 space-y-3">
