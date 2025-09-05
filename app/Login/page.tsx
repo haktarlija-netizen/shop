@@ -1,6 +1,10 @@
 // app/Login/[id]/page.tsx
 
+import React from 'react'
+
 import type { Metadata } from "next";
+
+import Homeps from './Home'
 
 export const metadata: Metadata = {
   title: "লগইন করুন ও রেফার করে আয় করুন | MyApp",
@@ -25,3 +29,12 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
+
+export default function page() {
+  return (
+ <>
+
+ <Homeps />
+ </>
+  )
+}
