@@ -304,19 +304,16 @@ id:getid,
 
 
   };
-  const handleNotificationsSubmit =  ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-) => {
+  const handleNotificationsSubmit = (e?: React.FormEvent) {
  
     e?.preventDefault();
     fakeSave("notifications", notificationsData);
   };
-  const handleAccountSubmit = ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-) => {
+  const handleAccountSubmit = (e?: React.FormEvent) {
     e?.preventDefault();
     fakeSave("account", accountData);
   };
-  const handlePaymentsSubmit =  ( e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-) => {
+  const handlePaymentsSubmit = (e?: React.FormEvent) {
     e?.preventDefault();
     fakeSave("payments", paymentsData);
   };
@@ -421,12 +418,12 @@ id:getid,
         <div className="pt-2 border-t border-gray-200/10">
           <button
             className="w-full p-3 rounded-full bg-gradient-to-r from-pink-500 to-indigo-500 shadow-md hover:scale-[1.02] transition-transform flex items-center justify-center gap-3"
-         onClick={async () => {
-       if (handleProfileSubmit) await handleProfileSubmit();
-      if (handleAccountSubmit) await handleAccountSubmit();
-      if (handleNotificationsSubmit) await handleNotificationsSubmit();
-    }}
-  >
+      onClick={(e) => {
+    handleProfileSubmit(e);
+    handleAccountSubmit(e);
+    handleNotificationsSubmit(e);
+  }}
+>
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M12 16v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
