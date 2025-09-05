@@ -304,16 +304,16 @@ id:getid,
 
 
   };
-  const handleNotificationsSubmit = (e?: React.FormEvent) {
+  const handleNotificationsSubmit =(e?: React.FormEvent) => {
  
     e?.preventDefault();
     fakeSave("notifications", notificationsData);
   };
-  const handleAccountSubmit = (e?: React.FormEvent) {
+  const handleAccountSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     fakeSave("account", accountData);
   };
-  const handlePaymentsSubmit = (e?: React.FormEvent) {
+  const handlePaymentsSubmit =(e?: React.FormEvent) => {
     e?.preventDefault();
     fakeSave("payments", paymentsData);
   };
