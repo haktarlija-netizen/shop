@@ -334,7 +334,10 @@ if (uniid) {
           backgroundSize: 'cover',
         }}
       />
-{datetime}
+
+
+
+
       <AnimatePresence>
         {creatures.map(creature =>
           !removedIds.includes(creature.id) ? (
