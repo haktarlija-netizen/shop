@@ -4,6 +4,12 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Api from "../api/Api";
 
 export default function CasinoPage() {
+
+  type Player = {
+  id: number;
+  name: string;
+};
+
   // ডেমো ডেটা: পরবর্তীতে API থেকে ডেটা লোড করার জন্য এই কাঠামো ব্যবহার করা যাবে।
   const initialPlayers = useMemo(
     () =>
@@ -50,7 +56,9 @@ const getColor = (n: Item) => (n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red"
     setTimeout(() => {
       setResult(win);
       setHistory((h) => [win, ...h].slice(0, 12));
-      setAvailablePlayers((prev) => prev.filter((p) => p.id !== win.id));
+  
+      setAvailablePlayers((prev: any[]) => prev.filter((p) => p.id !== win?.id));
+
       setSpinning(false);
 
       setModalVisible(true);
