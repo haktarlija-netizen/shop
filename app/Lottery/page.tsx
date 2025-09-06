@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -17,8 +9,8 @@ export default function CasinoPage() {
     name: string;
   };
 
-  // ডেমো ডেটা: পরবর্তীতে API থেকে ডেটা লোড করার জন্য এই কাঠামো ব্যবহার করা যাবে।
-  const initialPlayers: Player[] = useMemo(
+  // ডেমো ডেটা (যদি API fail করে fallback হিসেবে)
+  const initialPlayers = useMemo(
     () =>
       Array.from({ length: 15 }, (_, i) => ({
         id: 1000 + i,
@@ -55,24 +47,20 @@ export default function CasinoPage() {
 
     setAngle((prev) => prev + target);
 
-    const duration = 2000;
+    const duration = 6000; // 6s spin
     setTimeout(() => {
       setResult(win);
       setHistory((h) => [win, ...h].slice(0, 12));
-
-      setAvailablePlayers((prev) =>
-        prev.filter((p) => p.id !== win?.id)
-      );
-
+      setAvailablePlayers((prev) => prev.filter((p) => p.id !== win?.id));
       setSpinning(false);
-      setModalVisible(true);
 
-      setTimeout(() => setModalVisible(false), 2000); // 2 সেকেন্ড পর হাইড
+      setModalVisible(true);
+      setTimeout(() => setModalVisible(false), 10000); // 10 সেকেন্ড পরে hide
     }, duration);
   };
 
   useEffect(() => {
-    getus();
+    getUsers();
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
@@ -83,17 +71,15 @@ export default function CasinoPage() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [spinning, availablePlayers]);
 
-  const getus = () => {
+  const getUsers = () => {
     Api.get(`/all_users`)
       .then((res) => {
-        console.log(res.data);
-        setAvailablePlayers(res.data.data as Player[]);
+        setAvailablePlayers(res.data.data);
       })
       .catch((err) => {
-        console.error("Earning History Error:", err);
+        console.error("Error:", err);
         setAvailablePlayers(initialPlayers);
-      })
-      .finally(() => console.log("not error data finally get data"));
+      });
   };
 
   const pocketsElements = availablePlayers.map((p, i) => {
@@ -103,9 +89,9 @@ export default function CasinoPage() {
     return (
       <div
         key={p.id}
-        className="absolute top-1/2 left-1/2 w-32 h-16 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-xs font-semibold rounded-t-lg shadow-sm border border-gray-400 p-2"
+        className="absolute top-1/2 left-1/2 w-28 h-14 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-xs font-semibold rounded-t-lg shadow-sm border border-gray-400 p-1 sm:p-2"
         style={{
-          transform: `rotate(${rotation}deg) translateY(-250px) rotate(${-rotation}deg)`,
+          transform: `rotate(${rotation}deg) translateY(-220px) rotate(${-rotation}deg)`,
           background:
             color === "green"
               ? "#10B981"
@@ -115,20 +101,20 @@ export default function CasinoPage() {
           color: "white",
         }}
       >
-        <span className="text-sm font-bold">{p.name}</span>
-        <span className="text-xs opacity-75">ID: {p.id}</span>
+        <span className="text-xs sm:text-sm font-bold">{p.name}</span>
+        <span className="text-[10px] sm:text-xs opacity-75">ID: {p.id}</span>
       </div>
     );
   });
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-6 font-sans">
       <div className="max-w-7xl mx-auto">
         <header className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-extrabold text-yellow-400 tracking-wider">
+          <h1 className="text-lg sm:text-2xl font-extrabold text-yellow-400 tracking-wider">
             SPiN WiN
           </h1>
-          <div className="text-sm">
+          <div className="text-xs sm:text-sm">
             Current Draw:{" "}
             <span className="font-mono text-yellow-200">
               #{history.length ? 2358 + history.length : 2358}
@@ -139,7 +125,7 @@ export default function CasinoPage() {
         <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left panel */}
           <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold text-yellow-300 mb-3">
+            <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-3">
               Available Players
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm max-h-80 overflow-y-auto">
@@ -147,7 +133,7 @@ export default function CasinoPage() {
                 availablePlayers.map((p) => (
                   <div
                     key={p.id}
-                    className="p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105"
+                    className="p-2 sm:p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105"
                     style={{
                       background:
                         getColor(p) === "green"
@@ -171,11 +157,11 @@ export default function CasinoPage() {
 
           {/* Center wheel */}
           <section className="md:col-span-6 flex flex-col items-center">
-            <div className="relative w-full max-w-[580px] h-[580px] flex items-center justify-center">
+            <div className="relative w-full max-w-[500px] h-[500px] sm:max-w-[580px] sm:h-[580px] flex items-center justify-center">
               <div className="absolute w-full h-full">
                 <div
                   ref={wheelRef}
-                  className="rounded-full shadow-2xl border-8 border-yellow-500 overflow-hidden relative w-full h-full"
+                  className="rounded-full shadow-2xl border-4 sm:border-8 border-yellow-500 overflow-hidden relative w-full h-full"
                   style={{
                     transition: spinning
                       ? "transform 6s cubic-bezier(.08,.8,.2,1)"
@@ -186,7 +172,7 @@ export default function CasinoPage() {
                   }}
                 >
                   {pocketsElements}
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-yellow-600 flex items-center justify-center text-3xl font-extrabold border-4 border-yellow-700 text-black shadow-inner">
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-yellow-600 flex items-center justify-center text-xl sm:text-3xl font-extrabold border-2 sm:border-4 border-yellow-700 text-black shadow-inner">
                     SPiN
                   </div>
                 </div>
@@ -195,17 +181,17 @@ export default function CasinoPage() {
                   className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
                   style={{ top: -12 }}
                 >
-                  <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[32px] border-b-yellow-400 mx-auto"></div>
+                  <div className="w-0 h-0 border-l-[14px] sm:border-l-[18px] border-l-transparent border-r-[14px] sm:border-r-[18px] border-r-transparent border-b-[28px] sm:border-b-[32px] border-b-yellow-400 mx-auto"></div>
                 </div>
               </div>
             </div>
 
             {/* Controls */}
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-4 items-center">
               <button
                 onClick={spin}
                 disabled={spinning || availablePlayers.length === 0}
-                className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 ${
+                className={`px-6 sm:px-8 py-2 sm:py-3 rounded-full font-bold text-base sm:text-lg transition-all duration-300 ${
                   spinning || availablePlayers.length === 0
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                     : "bg-yellow-400 text-black hover:bg-yellow-300 active:scale-95"
@@ -213,12 +199,10 @@ export default function CasinoPage() {
               >
                 {spinning ? "Spinning..." : "SPIN"}
               </button>
-              <div className="bg-gray-800 p-4 rounded-lg shadow-inner text-white font-mono">
+              <div className="bg-gray-800 p-3 sm:p-4 rounded-lg shadow-inner text-white font-mono text-sm sm:text-base">
                 Result:{" "}
                 <span className="font-bold ml-2 text-yellow-300">
-                  {result === null
-                    ? "—"
-                    : `${result.name} (ID: ${result.id})`}
+                  {result === null ? "—" : `${result.name} (ID: ${result.id})`}
                 </span>
               </div>
             </div>
@@ -226,13 +210,15 @@ export default function CasinoPage() {
 
           {/* Right panel */}
           <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold text-yellow-300 mb-3">History</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-3">
+              History
+            </h2>
             <div className="space-y-2 text-sm max-h-80 overflow-y-auto">
               {history.length ? (
                 history.map((h, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-3 rounded-lg border border-gray-600"
+                    className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-600"
                     style={{ background: "#1F2937" }}
                   >
                     <div className="font-mono text-yellow-200">
@@ -255,13 +241,46 @@ export default function CasinoPage() {
         {/* Modal */}
         {modalVisible && result && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 text-white p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm border-4 border-yellow-400 animate-pulse">
-              <h2 className="text-3xl font-extrabold mb-4 text-yellow-400">
-                🎉 Winner! 🎉
-              </h2>
-              <p className="text-2xl mb-2 font-bold">{result.name}</p>
-              <p className="text-lg opacity-80 mb-6">ID: {result.id}</p>
-              <p className="text-sm text-gray-400">
+            <div className="bg-gray-900 text-white p-6 sm:p-10 rounded-2xl shadow-2xl text-center w-full max-w-md border-4 border-yellow-400 relative overflow-hidden">
+              {/* Winner Circle Name */}
+              <div className="relative w-52 h-52 sm:w-64 sm:h-64 mx-auto">
+                <svg
+                  viewBox="0 0 300 300"
+                  className="w-full h-full animate-spin-slow"
+                >
+                  <defs>
+                    <path
+                      id="circlePath"
+                      d="M 150, 150 m -100, 0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0"
+                    />
+                  </defs>
+                  <text fill="#FACC15" fontSize="16" fontWeight="bold">
+                    <textPath
+                      href="#circlePath"
+                      startOffset="0%"
+                      textAnchor="middle"
+                      letterSpacing="4"
+                    >
+                      🎉 Winner: {result.name} 🎉 Winner: {result.name} 🎉
+                    </textPath>
+                  </text>
+                </svg>
+
+                {/* Winner Name in Middle */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <h2 className="text-xl sm:text-3xl font-extrabold text-yellow-400 mb-2">
+                    🎊 Winner 🎊
+                  </h2>
+                  <p className="text-lg sm:text-2xl font-bold">
+                    {result.name}
+                  </p>
+                  <p className="text-sm sm:text-lg opacity-80">
+                    ID: {result.id}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-400 mt-6">
                 This window will close automatically in 10 seconds
               </p>
             </div>
@@ -271,6 +290,554 @@ export default function CasinoPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useMemo, useRef, useState } from "react";
+// import Api from "../api/Api";
+
+// export default function CasinoPage() {
+//   type Player = {
+//     id: number;
+//     name: string;
+//   };
+
+//   const initialPlayers: Player[] = useMemo(
+//     () =>
+//       Array.from({ length: 15 }, (_, i) => ({
+//         id: 1000 + i,
+//         name: `Player ${i + 1}`,
+//       })),
+//     []
+//   );
+
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [result, setResult] = useState<Player | null>(null);
+//   const [history, setHistory] = useState<Player[]>([]);
+//   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   const getColor = (id: number) =>
+//     id % 3 === 0 ? "green" : id % 2 === 0 ? "red" : "black";
+
+//   const spin = () => {
+//     if (spinning || availablePlayers.length === 0) return;
+//     setSpinning(true);
+
+//     const pickIndex = Math.floor(Math.random() * availablePlayers.length);
+//     const win = availablePlayers[pickIndex];
+//     const pockets = availablePlayers.length;
+//     const degPer = 360 / pockets;
+//     const fullSpins = 6 + Math.floor(Math.random() * 3);
+//     const target = fullSpins * 360 + degPer * pickIndex;
+
+//     setAngle((prev) => prev + target);
+
+//     setTimeout(() => {
+//       setResult(win);
+//       setHistory((h) => [win, ...h].slice(0, 12));
+//       setAvailablePlayers((prev) => prev.filter((p) => p.id !== win?.id));
+//       setSpinning(false);
+//       setModalVisible(true);
+
+//       setTimeout(() => setModalVisible(false), 3000);
+//     }, 2000);
+//   };
+
+//   useEffect(() => {
+//     getUsers();
+
+//     const handleKey = (e: KeyboardEvent) => {
+//       if (e.key === "Enter") spin();
+//     };
+//     window.addEventListener("keydown", handleKey);
+//     return () => window.removeEventListener("keydown", handleKey);
+//   }, [spinning, availablePlayers]);
+
+//   const getUsers = () => {
+//     Api.get(`/all_users`)
+//       .then((res) => setAvailablePlayers(res.data.data as Player[]))
+//       .catch(() => setAvailablePlayers(initialPlayers));
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white font-sans flex flex-col">
+//       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
+//         {/* Header */}
+//         <header className="flex flex-col sm:flex-row items-center justify-between gap-4">
+//           <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-lg">
+//             🎰 SPiN WiN
+//           </h1>
+//           <div className="text-sm sm:text-base bg-gray-800 px-4 py-2 rounded-full shadow-md">
+//             Current Draw:{" "}
+//             <span className="font-mono text-yellow-300">
+//               #{history.length ? 2358 + history.length : 2358}
+//             </span>
+//           </div>
+//         </header>
+
+//         {/* Main Layout */}
+//         <main className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+//           {/* Left Panel */}
+//           <aside className="lg:col-span-3 bg-gray-800/70 backdrop-blur-md p-4 rounded-xl shadow-xl">
+//             <h2 className="text-xl font-bold text-yellow-300 mb-3">
+//               Available Players
+//             </h2>
+//             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 text-sm max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
+//               {availablePlayers.length > 0 ? (
+//                 availablePlayers.map((p) => (
+//                   <div
+//                     key={p.id}
+//                     className="p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105 shadow-md"
+//                     style={{
+//                       background:
+//                         getColor(p.id) === "green"
+//                           ? "#065F46"
+//                           : getColor(p.id) === "red"
+//                           ? "#991B1B"
+//                           : "#1F2937",
+//                     }}
+//                   >
+//                     <span>{p.name}</span>
+//                     <span className="text-xs opacity-75">ID: {p.id}</span>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-center text-gray-400 col-span-full py-4">
+//                   No players left! 😥
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+
+//           {/* Center Wheel */}
+//           <section className="lg:col-span-6 flex flex-col items-center">
+//             <div className="relative w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[580px] aspect-square flex items-center justify-center">
+//               <div
+//                 ref={wheelRef}
+//                 className="rounded-full shadow-2xl border-8 border-yellow-500 overflow-hidden relative w-full h-full"
+//                 style={{
+//                   transition: spinning
+//                     ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                     : "none",
+//                   transform: `rotate(${angle}deg)`,
+//                   background:
+//                     "radial-gradient(circle at center, #FDE68A, #D97706)",
+//                 }}
+//               >
+//                 {availablePlayers.map((p, i) => {
+//                   const degPer = 360 / availablePlayers.length;
+//                   const rotation = i * degPer;
+//                   const color = getColor(p.id);
+//                   return (
+//                     <div
+//                       key={p.id}
+//                       className="absolute top-1/2 left-1/2 w-24 sm:w-28 h-12 sm:h-14 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-[10px] sm:text-xs font-semibold rounded-t-lg shadow-sm border border-gray-400"
+//                       style={{
+//                         transform: `rotate(${rotation}deg) translateY(-45%) rotate(${-rotation}deg)`,
+//                         background:
+//                           color === "green"
+//                             ? "#10B981"
+//                             : color === "red"
+//                             ? "#EF4444"
+//                             : "#000000",
+//                         color: "white",
+//                       }}
+//                     >
+//                       <span>{p.name}</span>
+//                       <span className="opacity-75">ID: {p.id}</span>
+//                     </div>
+//                   );
+//                 })}
+
+//                 {/* Center Button */}
+//                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 rounded-full bg-yellow-500 flex items-center justify-center text-lg sm:text-2xl font-extrabold border-4 border-yellow-700 text-black shadow-inner">
+//                   SPiN
+//                 </div>
+//               </div>
+//               {/* Pointer */}
+//               <div className="absolute top-0 left-1/2 -translate-x-1/2">
+//                 <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] border-l-transparent border-r-[12px] sm:border-r-[16px] border-r-transparent border-b-[24px] sm:border-b-[28px] border-b-yellow-400"></div>
+//               </div>
+//             </div>
+
+//             {/* Controls */}
+//             <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center">
+//               <button
+//                 onClick={spin}
+//                 disabled={spinning || availablePlayers.length === 0}
+//                 className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 shadow-lg ${
+//                   spinning || availablePlayers.length === 0
+//                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+//                     : "bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:scale-105 active:scale-95"
+//                 }`}
+//               >
+//                 {spinning ? "Spinning..." : "SPIN"}
+//               </button>
+//               <div className="bg-gray-800/80 px-4 py-3 rounded-lg shadow-inner text-white font-mono">
+//                 Result:{" "}
+//                 <span className="font-bold ml-2 text-yellow-300">
+//                   {result === null
+//                     ? "—"
+//                     : `${result.name} (ID: ${result.id})`}
+//                 </span>
+//               </div>
+//             </div>
+//           </section>
+
+//           {/* Right Panel */}
+//           <aside className="lg:col-span-3 bg-gray-800/70 backdrop-blur-md p-4 rounded-xl shadow-xl">
+//             <h2 className="text-xl font-bold text-yellow-300 mb-3">History</h2>
+//             <div className="space-y-2 text-sm max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
+//               {history.length ? (
+//                 history.map((h, i) => (
+//                   <div
+//                     key={i}
+//                     className="flex items-center justify-between p-3 rounded-lg border border-gray-600 shadow-md bg-gray-900/60"
+//                   >
+//                     <div className="font-mono text-yellow-200">
+//                       #{2350 + i}
+//                     </div>
+//                     <div className="font-bold">
+//                       {h.name} (ID: {h.id})
+//                     </div>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-xs opacity-60 text-center py-4">
+//                   No draws yet. Press SPIN to start.
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+//         </main>
+
+//         {/* Modal */}
+//         {modalVisible && result && (
+//           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+//             <div className="bg-gray-900/90 text-white p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm border-4 border-yellow-400 animate-bounce">
+//               <h2 className="text-3xl font-extrabold mb-4 text-yellow-400 drop-shadow-md">
+//                 🎉 Winner! 🎉
+//               </h2>
+//               <p className="text-2xl mb-2 font-bold">{result.name}</p>
+//               <p className="text-lg opacity-80 mb-6">ID: {result.id}</p>
+//               <p className="text-sm text-gray-400">
+//                 Closing automatically in 3s...
+//               </p>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useMemo, useRef, useState } from "react";
+// import Api from "../api/Api";
+
+// export default function CasinoPage() {
+//   type Player = {
+//     id: number;
+//     name: string;
+//   };
+
+//   // ডেমো ডেটা: পরবর্তীতে API থেকে ডেটা লোড করার জন্য এই কাঠামো ব্যবহার করা যাবে।
+//   const initialPlayers: Player[] = useMemo(
+//     () =>
+//       Array.from({ length: 15 }, (_, i) => ({
+//         id: 1000 + i,
+//         name: `Player ${i + 1}`,
+//       })),
+//     []
+//   );
+
+//   type Item = {
+//     id: number;
+//   };
+
+//   const getColor = (n: Item) =>
+//     n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red" : "black";
+
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [result, setResult] = useState<Player | null>(null);
+//   const [history, setHistory] = useState<Player[]>([]);
+//   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   const spin = () => {
+//     if (spinning || availablePlayers.length === 0) return;
+//     setSpinning(true);
+
+//     const pickIndex = Math.floor(Math.random() * availablePlayers.length);
+//     const win = availablePlayers[pickIndex];
+//     const pockets = availablePlayers.length;
+//     const degPer = 360 / pockets;
+//     const fullSpins = 6 + Math.floor(Math.random() * 3);
+//     const target = fullSpins * 360 + degPer * pickIndex;
+
+//     setAngle((prev) => prev + target);
+
+//     const duration = 2000;
+//     setTimeout(() => {
+//       setResult(win);
+//       setHistory((h) => [win, ...h].slice(0, 12));
+
+//       setAvailablePlayers((prev) =>
+//         prev.filter((p) => p.id !== win?.id)
+//       );
+
+//       setSpinning(false);
+//       setModalVisible(true);
+
+//       setTimeout(() => setModalVisible(false), 2000); // 2 সেকেন্ড পর হাইড
+//     }, duration);
+//   };
+
+//   useEffect(() => {
+//     getus();
+
+//     const handleKey = (e: KeyboardEvent) => {
+//       if (e.key === "Enter") {
+//         spin();
+//       }
+//     };
+//     window.addEventListener("keydown", handleKey);
+//     return () => window.removeEventListener("keydown", handleKey);
+//   }, [spinning, availablePlayers]);
+
+//   const getus = () => {
+//     Api.get(`/all_users`)
+//       .then((res) => {
+//         console.log(res.data);
+//         setAvailablePlayers(res.data.data as Player[]);
+//       })
+//       .catch((err) => {
+//         console.error("Earning History Error:", err);
+//         setAvailablePlayers(initialPlayers);
+//       })
+//       .finally(() => console.log("not error data finally get data"));
+//   };
+
+//   const pocketsElements = availablePlayers.map((p, i) => {
+//     const degPer = 360 / availablePlayers.length;
+//     const rotation = i * degPer;
+//     const color = getColor(p);
+//     return (
+//       <div
+//         key={p.id}
+//         className="absolute top-1/2 left-1/2 w-32 h-16 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-xs font-semibold rounded-t-lg shadow-sm border border-gray-400 p-2"
+//         style={{
+//           transform: `rotate(${rotation}deg) translateY(-250px) rotate(${-rotation}deg)`,
+//           background:
+//             color === "green"
+//               ? "#10B981"
+//               : color === "red"
+//               ? "#EF4444"
+//               : "#000000",
+//           color: "white",
+//         }}
+//       >
+//         <span className="text-sm font-bold">{p.name}</span>
+//         <span className="text-xs opacity-75">ID: {p.id}</span>
+//       </div>
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 font-sans">
+//       <div className="max-w-7xl mx-auto">
+//         <header className="flex items-center justify-between mb-6">
+//           <h1 className="text-2xl font-extrabold text-yellow-400 tracking-wider">
+//             SPiN WiN
+//           </h1>
+//           <div className="text-sm">
+//             Current Draw:{" "}
+//             <span className="font-mono text-yellow-200">
+//               #{history.length ? 2358 + history.length : 2358}
+//             </span>
+//           </div>
+//         </header>
+
+//         <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
+//           {/* Left panel */}
+//           <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
+//             <h2 className="text-xl font-bold text-yellow-300 mb-3">
+//               Available Players
+//             </h2>
+//             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm max-h-80 overflow-y-auto">
+//               {availablePlayers.length > 0 ? (
+//                 availablePlayers.map((p) => (
+//                   <div
+//                     key={p.id}
+//                     className="p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105"
+//                     style={{
+//                       background:
+//                         getColor(p) === "green"
+//                           ? "#065F46"
+//                           : getColor(p) === "red"
+//                           ? "#991B1B"
+//                           : "#1F2937",
+//                     }}
+//                   >
+//                     <span>{p.name}</span>
+//                     <span className="text-xs opacity-75">ID: {p.id}</span>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-center text-gray-400 col-span-full py-4">
+//                   No players left! 😥
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+
+//           {/* Center wheel */}
+//           <section className="md:col-span-6 flex flex-col items-center">
+//             <div className="relative w-full max-w-[580px] h-[580px] flex items-center justify-center">
+//               <div className="absolute w-full h-full">
+//                 <div
+//                   ref={wheelRef}
+//                   className="rounded-full shadow-2xl border-8 border-yellow-500 overflow-hidden relative w-full h-full"
+//                   style={{
+//                     transition: spinning
+//                       ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                       : "none",
+//                     transform: `rotate(${angle}deg)`,
+//                     background:
+//                       "radial-gradient(circle at center, #FDE68A, #D97706)",
+//                   }}
+//                 >
+//                   {pocketsElements}
+//                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-yellow-600 flex items-center justify-center text-3xl font-extrabold border-4 border-yellow-700 text-black shadow-inner">
+//                     SPiN
+//                   </div>
+//                 </div>
+//                 {/* Pointer */}
+//                 <div
+//                   className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+//                   style={{ top: -12 }}
+//                 >
+//                   <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[32px] border-b-yellow-400 mx-auto"></div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Controls */}
+//             <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center">
+//               <button
+//                 onClick={spin}
+//                 disabled={spinning || availablePlayers.length === 0}
+//                 className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 ${
+//                   spinning || availablePlayers.length === 0
+//                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+//                     : "bg-yellow-400 text-black hover:bg-yellow-300 active:scale-95"
+//                 }`}
+//               >
+//                 {spinning ? "Spinning..." : "SPIN"}
+//               </button>
+//               <div className="bg-gray-800 p-4 rounded-lg shadow-inner text-white font-mono">
+//                 Result:{" "}
+//                 <span className="font-bold ml-2 text-yellow-300">
+//                   {result === null
+//                     ? "—"
+//                     : `${result.name} (ID: ${result.id})`}
+//                 </span>
+//               </div>
+//             </div>
+//           </section>
+
+//           {/* Right panel */}
+//           <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
+//             <h2 className="text-xl font-bold text-yellow-300 mb-3">History</h2>
+//             <div className="space-y-2 text-sm max-h-80 overflow-y-auto">
+//               {history.length ? (
+//                 history.map((h, i) => (
+//                   <div
+//                     key={i}
+//                     className="flex items-center justify-between p-3 rounded-lg border border-gray-600"
+//                     style={{ background: "#1F2937" }}
+//                   >
+//                     <div className="font-mono text-yellow-200">
+//                       #{2350 + i}
+//                     </div>
+//                     <div className="font-bold">
+//                       {h.name} (ID: {h.id})
+//                     </div>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-xs opacity-60 text-center py-4">
+//                   No draws yet. Press SPIN to start.
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+//         </main>
+
+//         {/* Modal */}
+//         {modalVisible && result && (
+//           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+//             <div className="bg-gray-800 text-white p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm border-4 border-yellow-400 animate-pulse">
+//               <h2 className="text-3xl font-extrabold mb-4 text-yellow-400">
+//                 🎉 Winner! 🎉
+//               </h2>
+//               <p className="text-2xl mb-2 font-bold">{result.name}</p>
+//               <p className="text-lg opacity-80 mb-6">ID: {result.id}</p>
+//               <p className="text-sm text-gray-400">
+//                 This window will close automatically in 10 seconds
+//               </p>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
