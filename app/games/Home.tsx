@@ -37,27 +37,7 @@ export default function AllCategorySection() {
 
   // ক্যাটাগরি ডাটা
   const categories = [
-    {
-      title: "নতুন পণ্য",
-      icon: <ShoppingBag size={36} />,
-      img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-      color: "from-pink-500 to-purple-600",
-  link: "/products/new",
-    },
-    {
-      title: "পুরাতন পণ্য",
-      icon: <Layers size={36} />,
-      img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
-      color: "from-blue-500 to-cyan-500",
-      link: "/products/old",
-    },
-    {
-      title: "শেয়ার মার্কেট",
-      icon: <TrendingUp size={36} />,
-      img: "https://images.unsplash.com/photo-1569025690938-a00729c9e1e8",
-      color: "from-green-500 to-emerald-500",
-      link: "/share-market",
-    },
+
     {
       title: "গেমস",
       icon: <Gamepad2 size={36} />,
@@ -65,20 +45,63 @@ export default function AllCategorySection() {
       color: "from-yellow-500 to-orange-600",
          link: "/games",
     },
+
+
     {
-      title: "লটারী স্পিন",
-      icon: <Gift size={36} />,
-      img: "https://images.unsplash.com/photo-1603297631957-4b2c6313f93e",
-      color: "from-red-500 to-pink-600",
-      link: "/Lottery",
+      title: "গেমস",
+      icon: <Gamepad2 size={36} />,
+      img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
+      color: "from-yellow-500 to-orange-600",
+         link: "/games",
     },
+
+
     {
-      title: "অন্য সেবা",
-      icon: <Layers size={36} />,
-      img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-      color: "from-indigo-500 to-violet-600",
-      link: "/services",
+      title: "গেমস",
+      icon: <Gamepad2 size={36} />,
+      img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
+      color: "from-yellow-500 to-orange-600",
+         link: "/games",
     },
+
+
+
+    {
+      title: "গেমস",
+      icon: <Gamepad2 size={36} />,
+      img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
+      color: "from-yellow-500 to-orange-600",
+         link: "/games",
+    },
+
+
+
+    {
+      title: "গেমস (snacke )",
+      icon: <Gamepad2 size={36} />,
+      img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
+      color: "from-yellow-500 to-orange-600",
+         link: "/games/Snack",
+    },
+
+
+    {
+      title: "গেমস",
+      icon: <Gamepad2 size={36} />,
+      img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
+      color: "from-yellow-500 to-orange-600",
+         link: "/games",
+    },
+
+
+    {
+      title: "গেমস",
+      icon: <Gamepad2 size={36} />,
+      img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
+      color: "from-yellow-500 to-orange-600",
+         link: "/games",
+    },
+
   ];
 
   const shapes = ["circle", "star", "triangle"];
