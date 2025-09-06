@@ -1,3 +1,196 @@
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useMemo, useRef, useState } from "react";
+
+// export default function CasinoPage() {
+//   const numbers = useMemo(
+//     () => Array.from({ length: 37 }, (_, i) => i),
+//     []
+//   );
+//   const getColor = (n: number) => (n === 0 ? "green" : n % 2 === 0 ? "red" : "black");
+
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [result, setResult] = useState<number | null>(null);
+//   const [history, setHistory] = useState<number[]>([]);
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   const spin = () => {
+//     if (spinning) return;
+//     setSpinning(true);
+
+//     const pickIndex = Math.floor(Math.random() * numbers.length);
+//     const pockets = numbers.length;
+//     const degPer = 360 / pockets;
+//     const fullSpins = 6 + Math.floor(Math.random() * 3);
+//     const target = fullSpins * 360 + degPer * pickIndex;
+
+//     setAngle(prev => prev + target);
+
+//     setTimeout(() => {
+//       const win = numbers[pickIndex];
+//       setResult(win);
+//       setHistory(h => [win, ...h].slice(0, 12));
+//       setSpinning(false);
+//     }, 6000);
+//   };
+
+//   const pocketsElements = numbers.map((n, i) => {
+//     const degPer = 360 / numbers.length;
+//     const rotation = i * degPer;
+//     const color = getColor(n);
+//     return (
+//       <div
+//         key={n}
+//         className="absolute top-1/2 left-1/2 w-28 h-14 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-xs sm:text-sm font-semibold rounded-t-lg shadow-sm border"
+//         style={{
+//           transform: `rotate(${rotation}deg) translateY(-200px) rotate(${-rotation}deg)`,
+//           background:
+//             color === "green"
+//               ? "#32CD32"
+//               : color === "red"
+//               ? "#d32f2f"
+//               : "#111827",
+//           color: "white",
+//         }}
+//       >
+//         <span className="font-bold">{n}</span>
+//       </div>
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-green-700 text-white p-4 sm:p-6">
+//       <div className="max-w-7xl mx-auto">
+//         <header className="flex items-center justify-between mb-4">
+//           <h1 className="text-2xl sm:text-3xl font-bold">SPiN WiN</h1>
+//           <div className="text-sm sm:text-base">
+//             Current Draw:{" "}
+//             <span className="font-mono">
+//               #{history.length ? 2358 + history.length : 2358}
+//             </span>
+//           </div>
+//         </header>
+
+//         <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
+//           {/* Left sidebar */}
+//           <aside className="md:col-span-3 bg-green-800 p-4 rounded-xl shadow-inner overflow-auto max-h-[80vh]">
+//             <h2 className="text-lg font-semibold mb-3">Numbers</h2>
+//             <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 text-sm">
+//               {numbers.map(n => (
+//                 <div
+//                   key={n}
+//                   className="p-2 sm:p-3 rounded flex items-center justify-center font-bold text-center"
+//                   style={{
+//                     background: getColor(n) === "green"
+//                       ? "#206040"
+//                       : getColor(n) === "red"
+//                       ? "#7a1f1f"
+//                       : "#0f1724",
+//                   }}
+//                 >
+//                   {n}
+//                 </div>
+//               ))}
+//             </div>
+//           </aside>
+
+//           {/* Center wheel */}
+//           <section className="md:col-span-6 flex flex-col items-center">
+//             <div className="relative w-[320px] sm:w-[420px] md:w-[500px] aspect-square flex items-center justify-center">
+//               <div
+//                 ref={wheelRef}
+//                 className="rounded-full shadow-2xl border-8 border-yellow-500 overflow-hidden relative"
+//                 style={{
+//                   width: "100%",
+//                   height: "100%",
+//                   transition: spinning
+//                     ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                     : "none",
+//                   transform: `rotate(${angle}deg)`,
+//                   background: "radial-gradient(circle at center, #f6d365, #fda085)",
+//                 }}
+//               >
+//                 {pocketsElements}
+
+//                 {/* Center SPIN button */}
+//                 <div
+//                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+//                              w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-yellow-600
+//                              flex items-center justify-center text-xl sm:text-3xl font-bold
+//                              border-4 border-yellow-700 cursor-pointer hover:bg-yellow-500
+//                              transition-colors"
+//                   onClick={spin}
+//                 >
+//                   SPiN
+//                 </div>
+//               </div>
+
+//               {/* Pointer */}
+//               <div className="absolute left-1/2 -translate-x-1/2 -mt-3 w-0 h-0" style={{ top: -6 }}>
+//                 <div className="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-b-[26px] border-b-white mx-auto"></div>
+//               </div>
+
+//               {/* Result display */}
+//               <div className="absolute bottom-[-70px] text-center">
+//                 Result:{" "}
+//                 <span className="font-bold text-yellow-300">
+//                   {result === null ? "—" : result}
+//                 </span>
+//               </div>
+//             </div>
+//           </section>
+
+//           {/* Right panel */}
+//           <aside className="md:col-span-3 bg-green-800 p-4 rounded-xl shadow-inner overflow-auto max-h-[80vh]">
+//             <h2 className="text-lg font-semibold mb-3">History</h2>
+//             <div className="space-y-2 text-sm">
+//               {history.length ? (
+//                 history.map((h, i) => (
+//                   <div
+//                     key={i}
+//                     className="flex items-center justify-between p-2 rounded"
+//                     style={{ background: "#0f2a1f" }}
+//                   >
+//                     <div className="font-mono">#{2350 + i}</div>
+//                     <div className="font-bold">{h}</div>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-xs opacity-80 text-center">
+//                   No draws yet. Press SPIN to start.
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+//         </main>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -9,7 +202,7 @@ export default function CasinoPage() {
     name: string;
   };
 
-  // ডেমো ডেটা (যদি API fail করে fallback হিসেবে)
+  // ডেমো ডেটা (fallback)
   const initialPlayers = useMemo(
     () =>
       Array.from({ length: 15 }, (_, i) => ({
@@ -24,7 +217,7 @@ export default function CasinoPage() {
   };
 
   const getColor = (n: Item) =>
-    n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red" : "black";
+    n.id % 3 === 0 ? "#10B981" : n.id % 2 === 0 ? "#EF4444" : "#1F2937";
 
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -47,7 +240,7 @@ export default function CasinoPage() {
 
     setAngle((prev) => prev + target);
 
-    const duration = 6000; // 6s spin
+    const duration = 6000;
     setTimeout(() => {
       setResult(win);
       setHistory((h) => [win, ...h].slice(0, 12));
@@ -55,7 +248,7 @@ export default function CasinoPage() {
       setSpinning(false);
 
       setModalVisible(true);
-      setTimeout(() => setModalVisible(false), 10000); // 10 সেকেন্ড পরে hide
+      setTimeout(() => setModalVisible(false), 10000);
     }, duration);
   };
 
@@ -63,9 +256,7 @@ export default function CasinoPage() {
     getUsers();
 
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        spin();
-      }
+      if (e.key === "Enter") spin();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -73,36 +264,35 @@ export default function CasinoPage() {
 
   const getUsers = () => {
     Api.get(`/all_users`)
-      .then((res) => {
-        setAvailablePlayers(res.data.data);
-      })
+      .then((res) => setAvailablePlayers(res.data.data))
       .catch((err) => {
         console.error("Error:", err);
         setAvailablePlayers(initialPlayers);
       });
   };
 
+  // wheel elements
   const pocketsElements = availablePlayers.map((p, i) => {
     const degPer = 360 / availablePlayers.length;
     const rotation = i * degPer;
-    const color = getColor(p);
+
     return (
       <div
         key={p.id}
-        className="absolute top-1/2 left-1/2 w-28 h-14 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-xs font-semibold rounded-t-lg shadow-sm border border-gray-400 p-1 sm:p-2"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                   flex flex-col items-center justify-center text-[8px] sm:text-[10px] md:text-sm
+                   font-bold rounded-t-lg shadow-md border border-gray-400 px-1 sm:px-2"
         style={{
-          transform: `rotate(${rotation}deg) translateY(-220px) rotate(${-rotation}deg)`,
-          background:
-            color === "green"
-              ? "#10B981"
-              : color === "red"
-              ? "#EF4444"
-              : "#000000",
+          transform: `rotate(${rotation}deg) translateY(-45%) rotate(${-rotation}deg)`,
+          background: getColor(p),
           color: "white",
+          minWidth: "60px",
         }}
       >
-        <span className="text-xs sm:text-sm font-bold">{p.name}</span>
-        <span className="text-[10px] sm:text-xs opacity-75">ID: {p.id}</span>
+        <span className="font-bold text-center truncate">{p.name}</span>
+        <span className="text-[7px] sm:text-[9px] md:text-xs opacity-70 text-center">
+          ID: {p.id}
+        </span>
       </div>
     );
   });
@@ -134,14 +324,7 @@ export default function CasinoPage() {
                   <div
                     key={p.id}
                     className="p-2 sm:p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105"
-                    style={{
-                      background:
-                        getColor(p) === "green"
-                          ? "#065F46"
-                          : getColor(p) === "red"
-                          ? "#991B1B"
-                          : "#1F2937",
-                    }}
+                    style={{ background: getColor(p) }}
                   >
                     <span>{p.name}</span>
                     <span className="text-xs opacity-75">ID: {p.id}</span>
@@ -157,7 +340,7 @@ export default function CasinoPage() {
 
           {/* Center wheel */}
           <section className="md:col-span-6 flex flex-col items-center">
-            <div className="relative w-full max-w-[500px] h-[500px] sm:max-w-[580px] sm:h-[580px] flex items-center justify-center">
+            <div className="relative w-full max-w-[400px] sm:max-w-[500px] md:max-w-[580px] aspect-square flex items-center justify-center">
               <div className="absolute w-full h-full">
                 <div
                   ref={wheelRef}
@@ -172,16 +355,23 @@ export default function CasinoPage() {
                   }}
                 >
                   {pocketsElements}
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-yellow-600 flex items-center justify-center text-xl sm:text-3xl font-extrabold border-2 sm:border-4 border-yellow-700 text-black shadow-inner">
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                                  w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-yellow-600
+                                  flex items-center justify-center text-xl sm:text-3xl font-extrabold
+                                  border-2 sm:border-4 border-yellow-700 text-black shadow-inner">
                     SPiN
                   </div>
                 </div>
+
                 {/* Pointer */}
                 <div
                   className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
                   style={{ top: -12 }}
                 >
-                  <div className="w-0 h-0 border-l-[14px] sm:border-l-[18px] border-l-transparent border-r-[14px] sm:border-r-[18px] border-r-transparent border-b-[28px] sm:border-b-[32px] border-b-yellow-400 mx-auto"></div>
+                  <div className="w-0 h-0 border-l-[14px] sm:border-l-[18px] border-l-transparent
+                                  border-r-[14px] sm:border-r-[18px] border-r-transparent
+                                  border-b-[28px] sm:border-b-[32px] border-b-yellow-400 mx-auto"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -241,13 +431,10 @@ export default function CasinoPage() {
         {/* Modal */}
         {modalVisible && result && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-900 text-white p-6 sm:p-10 rounded-2xl shadow-2xl text-center w-full max-w-md border-4 border-yellow-400 relative overflow-hidden">
+            <div className="bg-gray-900 text-white p-6 sm:p-10 rounded-2xl shadow-2xl text-center max-w-md border-4 border-yellow-400 relative overflow-hidden">
               {/* Winner Circle Name */}
               <div className="relative w-52 h-52 sm:w-64 sm:h-64 mx-auto">
-                <svg
-                  viewBox="0 0 300 300"
-                  className="w-full h-full animate-spin-slow"
-                >
+                <svg viewBox="0 0 300 300" className="w-full h-full animate-spin-slow">
                   <defs>
                     <path
                       id="circlePath"
@@ -255,12 +442,7 @@ export default function CasinoPage() {
                     />
                   </defs>
                   <text fill="#FACC15" fontSize="16" fontWeight="bold">
-                    <textPath
-                      href="#circlePath"
-                      startOffset="0%"
-                      textAnchor="middle"
-                      letterSpacing="4"
-                    >
+                    <textPath href="#circlePath" startOffset="0%" textAnchor="middle" letterSpacing="4">
                       🎉 Winner: {result.name} 🎉 Winner: {result.name} 🎉
                     </textPath>
                   </text>
@@ -268,15 +450,9 @@ export default function CasinoPage() {
 
                 {/* Winner Name in Middle */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <h2 className="text-xl sm:text-3xl font-extrabold text-yellow-400 mb-2">
-                    🎊 Winner 🎊
-                  </h2>
-                  <p className="text-lg sm:text-2xl font-bold">
-                    {result.name}
-                  </p>
-                  <p className="text-sm sm:text-lg opacity-80">
-                    ID: {result.id}
-                  </p>
+                  <h2 className="text-xl sm:text-3xl font-extrabold text-yellow-400 mb-2">🎊 Winner 🎊</h2>
+                  <p className="text-lg sm:text-2xl font-bold">{result.name}</p>
+                  <p className="text-sm sm:text-lg opacity-80">ID: {result.id}</p>
                 </div>
               </div>
 
@@ -290,6 +466,1015 @@ export default function CasinoPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useMemo, useRef, useState } from "react";
+// import Api from "../api/Api";
+// import { Menu } from "lucide-react";
+
+// type Player = { id: number; name: string };
+
+// export default function CasinoPage() {
+//   const initialPlayers = useMemo(
+//     () =>
+//       Array.from({ length: 15 }, (_, i) => ({
+//         id: 1000 + i,
+//         name: `Player ${i + 1}`,
+//       })),
+//     []
+//   );
+
+//   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
+//   const [history, setHistory] = useState<Player[]>([]);
+//   const [result, setResult] = useState<Player | null>(null);
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [sidebarOpen, setSidebarOpen] = useState(false);
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   const getColor = (p: Player) =>
+//     p.id % 3 === 0 ? "#10B981" : p.id % 2 === 0 ? "#EF4444" : "#111827";
+
+//   const getUsers = () => {
+//     Api.get(`/all_users`)
+//       .then((res) => setAvailablePlayers(res.data.data))
+//       .catch(() => setAvailablePlayers(initialPlayers));
+//   };
+
+//   useEffect(() => {
+//     getUsers();
+//   }, []);
+
+//   const spin = () => {
+//     if (spinning || availablePlayers.length === 0) return;
+//     setSpinning(true);
+
+//     const pickIndex = Math.floor(Math.random() * availablePlayers.length);
+//     const win = availablePlayers[pickIndex];
+//     const pockets = availablePlayers.length;
+//     const degPer = 360 / pockets;
+//     const fullSpins = 6 + Math.floor(Math.random() * 3);
+//     const target = fullSpins * 360 + degPer * pickIndex;
+
+//     setAngle((prev) => prev + target);
+
+//     setTimeout(() => {
+//       setResult(win);
+//       setHistory((h) => [win, ...h].slice(0, 12));
+//       setAvailablePlayers((prev) => prev.filter((p) => p.id !== win.id));
+//       setSpinning(false);
+//       setModalVisible(true);
+//       setTimeout(() => setModalVisible(false), 10000);
+//     }, 6000);
+//   };
+
+//   const pocketsElements = availablePlayers.map((p, i) => {
+//     const degPer = 360 / availablePlayers.length;
+//     const rotation = i * degPer;
+//     return (
+//       <div
+//         key={p.id}
+//         className="absolute top-1/2 left-1/2 w-20 sm:w-24 md:w-28 h-12 sm:h-14 md:h-16
+//         -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center
+//         text-[10px] sm:text-xs md:text-sm font-bold rounded-t-lg shadow-md border border-gray-400 px-1"
+//         style={{
+//           transform: `rotate(${rotation}deg) translateY(-45%) rotate(${-rotation}deg)`,
+//           background: getColor(p),
+//           color: "white",
+//         }}
+//       >
+//         <span className="truncate max-w-[90%]">{p.name}</span>
+//         <span className="opacity-70 text-[9px] sm:text-[10px]">{p.id}</span>
+//       </div>
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-gray-900 text-white flex">
+//       {/* Sidebar */}
+//       <aside
+//         className={`fixed md:static top-0 left-0 h-full w-64 bg-gray-800/90 backdrop-blur-lg p-4 transition-transform duration-300 z-40
+//         ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+//       >
+//         <h2 className="text-xl font-bold mb-4">Players</h2>
+//         <ul className="space-y-2 max-h-64 overflow-y-auto">
+//           {availablePlayers.map((p) => (
+//             <li
+//               key={p.id}
+//               className="p-2 rounded bg-gray-700/50 flex justify-between items-center"
+//             >
+//               <span>{p.name}</span>
+//               <span className="text-sm opacity-70">#{p.id}</span>
+//             </li>
+//           ))}
+//         </ul>
+
+//         {result && (
+//           <div className="mt-6 p-4 bg-yellow-500 text-black rounded-xl font-bold shadow-lg">
+//             Winner: {result.name}
+//           </div>
+//         )}
+
+//         <div className="mt-6">
+//           <h3 className="text-lg font-semibold mb-2">History</h3>
+//           <ul className="space-y-1 max-h-64 overflow-y-auto">
+//             {history.map((h, i) => (
+//               <li
+//                 key={i}
+//                 className="p-2 bg-gray-700/50 rounded flex justify-between items-center"
+//               >
+//                 <span>{h.name}</span>
+//                 <span className="text-sm opacity-70">#{h.id}</span>
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       </aside>
+
+//       {/* Mobile overlay */}
+//       {sidebarOpen && (
+//         <div
+//           className="fixed inset-0 bg-black/50 z-30 md:hidden"
+//           onClick={() => setSidebarOpen(false)}
+//         />
+//       )}
+
+//       {/* Main */}
+//       <main className="flex-1 flex flex-col items-center justify-center p-4 relative">
+//         {/* Mobile toggle button */}
+//         <button
+//           className="md:hidden absolute top-4 left-4 z-50 p-2 bg-gray-800 rounded-lg"
+//           onClick={() => setSidebarOpen(true)}
+//         >
+//           <Menu size={24} />
+//         </button>
+
+//         {/* Wheel */}
+//         <div className="relative w-full aspect-square max-w-[280px] sm:max-w-[400px] md:max-w-[600px] flex items-center justify-center">
+//           <div
+//             ref={wheelRef}
+//             className="rounded-full shadow-[0_0_25px_#FACC15] border-4 sm:border-8 border-yellow-400 overflow-hidden relative w-full h-full"
+//             style={{
+//               transition: spinning
+//                 ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                 : "none",
+//               transform: `rotate(${angle}deg)`,
+//               background: "radial-gradient(circle at center, #FDE68A, #D97706)",
+//             }}
+//           >
+//             {pocketsElements}
+//             <div className="absolute inset-0 flex items-center justify-center">
+//               <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 rounded-full bg-yellow-600 flex items-center justify-center text-lg sm:text-xl md:text-3xl font-extrabold border-2 sm:border-4 border-yellow-700 text-black shadow-[0_0_20px_#FACC15]">
+//                 SPiN
+//               </div>
+//             </div>
+//           </div>
+//           {/* Pointer */}
+//           <div
+//             className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+//             style={{ top: -12 }}
+//           >
+//             <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] md:border-l-[20px] border-l-transparent
+//                             border-r-[12px] sm:border-r-[16px] md:border-r-[20px] border-r-transparent
+//                             border-b-[22px] sm:border-b-[28px] md:border-b-[36px] border-b-yellow-400
+//                             mx-auto drop-shadow-[0_0_10px_#FACC15]"></div>
+//           </div>
+//         </div>
+
+//         {/* Spin button */}
+//         <button
+//           onClick={spin}
+//           disabled={spinning || availablePlayers.length === 0}
+//           className="mt-6 px-6 py-3 bg-yellow-500 text-black rounded-xl font-bold hover:bg-yellow-400 disabled:opacity-50 shadow-[0_0_15px_#FACC15]"
+//         >
+//           {spinning ? "Spinning..." : "Spin Now"}
+//         </button>
+//       </main>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useRef, useState } from "react";
+
+// export default function CasinoPage() {
+//   type Player = {
+//     id: number;
+//     name: string;
+//   };
+
+//   const [players, setPlayers] = useState<Player[]>([]);
+//   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
+//   const [history, setHistory] = useState<Player[]>([]);
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   useEffect(() => {
+//     // ডেমো ডাটা
+//     const demoPlayers: Player[] = Array.from({ length: 12 }, (_, i) => ({
+//       id: i + 1,
+//       name: `Player ${i + 1}`,
+//     }));
+//     setPlayers(demoPlayers);
+//     setAvailablePlayers(demoPlayers);
+//   }, []);
+
+//   // স্পিন হ্যান্ডলার
+//   const handleSpin = () => {
+//     if (spinning || availablePlayers.length === 0) return;
+
+//     setSpinning(true);
+//     const pocketAngle = 360 / availablePlayers.length;
+//     const randomIndex = Math.floor(Math.random() * availablePlayers.length);
+
+//     const randomSpin = 5 * 360 + randomIndex * pocketAngle + pocketAngle / 2;
+//     const newAngle = angle + randomSpin;
+
+//     setAngle(newAngle);
+
+//     setTimeout(() => {
+//       const winner = availablePlayers[randomIndex];
+//       if (winner) {
+//         setHistory([winner, ...history]);
+//         setAvailablePlayers(availablePlayers.filter((p) => p.id !== winner.id));
+//       }
+//       setSpinning(false);
+//     }, 6000);
+//   };
+
+//   // Color
+//   const getColor = (p: Player) => {
+//     if (history.find((h) => h.id === p.id)) return "red";
+//     return "green";
+//   };
+
+//   // Wheel pockets
+//   const pocketsElements = availablePlayers.map((p, i) => {
+//     const pocketAngle = 360 / availablePlayers.length;
+//     return (
+//       <div
+//         key={p.id}
+//         className="absolute w-1/2 h-1/2 origin-bottom-left flex items-center justify-center text-xs sm:text-sm md:text-base font-bold text-black"
+//         style={{
+//           transform: `rotate(${i * pocketAngle}deg)`,
+//           background:
+//             getColor(p) === "green"
+//               ? "linear-gradient(135deg,#10B981,#065F46)"
+//               : "linear-gradient(135deg,#EF4444,#991B1B)",
+//           clipPath: "polygon(100% 0,0 0,0 100%)",
+//         }}
+//       >
+//         <span
+//           className="rotate-90 text-white font-extrabold drop-shadow"
+//           style={{ writingMode: "vertical-rl" }}
+//         >
+//           {p.name}
+//         </span>
+//       </div>
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-gray-900 text-white flex flex-col p-4 sm:p-6">
+//       {/* Sidebar Toggle (Mobile) */}
+//       <button
+//         onClick={() => setSidebarOpen(!sidebarOpen)}
+//         className="md:hidden fixed top-4 left-4 z-50 bg-yellow-500 text-black px-3 py-2 rounded-lg shadow-lg"
+//       >
+//         {sidebarOpen ? "✖ Close" : "☰ Players"}
+//       </button>
+
+//       <main className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
+//         {/* Sidebar */}
+//         <aside
+//           className={`fixed md:static top-0 left-0 h-full w-64 bg-gray-800 p-4 rounded-r-xl shadow-lg transform transition-transform duration-300 z-40
+//           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+//         >
+//           <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-3">
+//             Available Players
+//           </h2>
+//           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm max-h-[70vh] overflow-y-auto">
+//             {availablePlayers.length > 0 ? (
+//               availablePlayers.map((p) => (
+//                 <div
+//                   key={p.id}
+//                   className="p-2 sm:p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105"
+//                   style={{
+//                     background:
+//                       getColor(p) === "green"
+//                         ? "#065F46"
+//                         : getColor(p) === "red"
+//                         ? "#991B1B"
+//                         : "#1F2937",
+//                   }}
+//                 >
+//                   <span>{p.name}</span>
+//                   <span className="text-xs opacity-75">ID: {p.id}</span>
+//                 </div>
+//               ))
+//             ) : (
+//               <div className="text-center text-gray-400 col-span-full py-4">
+//                 No players left! 😥
+//               </div>
+//             )}
+//           </div>
+//         </aside>
+
+//         {/* Wheel Section */}
+//         <section className="md:col-span-6 flex flex-col items-center">
+//           <div className="relative w-full max-w-[280px] sm:max-w-[400px] md:max-w-[580px] h-[280px] sm:h-[400px] md:h-[580px] flex items-center justify-center">
+//             <div className="absolute w-full h-full">
+//               <div
+//                 ref={wheelRef}
+//                 className="rounded-full shadow-2xl border-4 sm:border-8 border-yellow-500 overflow-hidden relative w-full h-full"
+//                 style={{
+//                   transition: spinning
+//                     ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                     : "none",
+//                   transform: `rotate(${angle}deg)`,
+//                   background:
+//                     "radial-gradient(circle at center, #FDE68A, #D97706)",
+//                 }}
+//               >
+//                 {pocketsElements}
+//                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 sm:w-32 sm:h-32 md:w-48 md:h-48 rounded-full bg-yellow-600 flex items-center justify-center text-base sm:text-xl md:text-3xl font-extrabold border-2 sm:border-4 border-yellow-700 text-black shadow-inner">
+//                   SPiN
+//                 </div>
+//               </div>
+//               {/* Pointer */}
+//               <div
+//                 className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+//                 style={{ top: -12 }}
+//               >
+//                 <div className="w-0 h-0 border-l-[10px] sm:border-l-[14px] md:border-l-[18px] border-l-transparent border-r-[10px] sm:border-r-[14px] md:border-r-[18px] border-r-transparent border-b-[20px] sm:border-b-[28px] md:border-b-[32px] border-b-yellow-400 mx-auto"></div>
+//               </div>
+//             </div>
+//           </div>
+//           <button
+//             onClick={handleSpin}
+//             disabled={spinning || availablePlayers.length === 0}
+//             className="mt-6 px-6 py-3 bg-yellow-500 text-black rounded-xl shadow-lg font-bold hover:bg-yellow-400 disabled:opacity-50"
+//           >
+//             {spinning ? "Spinning..." : "Spin Now"}
+//           </button>
+//         </section>
+
+//         {/* History Section */}
+//         <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
+//           <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-3">
+//             History
+//           </h2>
+//           <div className="space-y-2 text-sm max-h-[70vh] overflow-y-auto">
+//             {history.length ? (
+//               history.map((h, i) => (
+//                 <div
+//                   key={i}
+//                   className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-600 transition-transform hover:scale-105 hover:shadow-md"
+//                   style={{ background: "#1F2937" }}
+//                 >
+//                   <div className="font-mono text-yellow-200 truncate">
+//                     #{2350 + i}
+//                   </div>
+//                   <div className="font-bold truncate">
+//                     {h.name} (ID: {h.id})
+//                   </div>
+//                 </div>
+//               ))
+//             ) : (
+//               <div className="text-xs opacity-60 text-center py-4">
+//                 No draws yet. Press SPIN to start.
+//               </div>
+//             )}
+//           </div>
+//         </aside>
+//       </main>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useMemo, useRef, useState } from "react";
+// import Api from "../api/Api";
+
+// export default function CasinoPage() {
+//   type Player = { id: number; name: string };
+//   type Item = { id: number };
+
+//   const initialPlayers = useMemo(
+//     () =>
+//       Array.from({ length: 12 }, (_, i) => ({
+//         id: 1000 + i,
+//         name: `Player ${i + 1}`,
+//       })),
+//     []
+//   );
+
+//   const getColor = (n: Item) =>
+//     n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red" : "black";
+
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [result, setResult] = useState<Player | null>(null);
+//   const [history, setHistory] = useState<Player[]>([]);
+//   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   const spin = () => {
+//     if (spinning || availablePlayers.length === 0) return;
+//     setSpinning(true);
+
+//     const pickIndex = Math.floor(Math.random() * availablePlayers.length);
+//     const win = availablePlayers[pickIndex];
+//     const degPer = 360 / availablePlayers.length;
+//     const fullSpins = 6 + Math.floor(Math.random() * 3);
+//     const target = fullSpins * 360 + degPer * pickIndex;
+
+//     setAngle((prev) => prev + target);
+
+//     setTimeout(() => {
+//       setResult(win);
+//       setHistory((h) => [win, ...h].slice(0, 12));
+//       setAvailablePlayers((prev) => prev.filter((p) => p.id !== win?.id));
+//       setSpinning(false);
+//       setModalVisible(true);
+//       setTimeout(() => setModalVisible(false), 10000);
+//     }, 6000);
+//   };
+
+//   useEffect(() => {
+//     getUsers();
+//     const handleKey = (e: KeyboardEvent) => {
+//       if (e.key === "Enter") spin();
+//     };
+//     window.addEventListener("keydown", handleKey);
+//     return () => window.removeEventListener("keydown", handleKey);
+//   }, [spinning, availablePlayers]);
+
+//   const getUsers = () => {
+//     Api.get(`/all_users`)
+//       .then((res) => setAvailablePlayers(res.data.data))
+//       .catch(() => setAvailablePlayers(initialPlayers));
+//   };
+
+//   const pocketsElements = availablePlayers.map((p, i) => {
+//     const degPer = 360 / availablePlayers.length;
+//     const rotation = i * degPer;
+//     const color = getColor(p);
+//     return (
+//       <div
+//         key={p.id}
+//         className="absolute top-1/2 left-1/2 w-16 sm:w-20 md:w-28 h-8 sm:h-10 md:h-14 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-[8px] sm:text-xs md:text-sm font-semibold rounded-t-lg border border-gray-500"
+//         style={{
+//           transform: `rotate(${rotation}deg) translateY(-${availablePlayers.length > 12 ? 130 : 190}px) rotate(${-rotation}deg)`,
+//           background:
+//             color === "green"
+//               ? "#10B981"
+//               : color === "red"
+//               ? "#EF4444"
+//               : "#000000",
+//           color: "white",
+//         }}
+//       >
+//         <span className="truncate">{p.name}</span>
+//         <span className="opacity-75">ID:{p.id}</span>
+//       </div>
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-6 font-sans">
+//       <div className="max-w-7xl mx-auto">
+//         {/* Header */}
+//         <header className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-2 sm:gap-0">
+//           <h1 className="text-xl sm:text-2xl font-extrabold text-yellow-400 tracking-wider">
+//             SPiN WiN
+//           </h1>
+//           <div className="text-xs sm:text-sm">
+//             Current Draw:{" "}
+//             <span className="font-mono text-yellow-200">
+//               #{history.length ? 2358 + history.length : 2358}
+//             </span>
+//           </div>
+//         </header>
+
+//         <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
+//           {/* Sidebar / Available Players */}
+//           <aside className="md:col-span-3 bg-gray-800 p-3 rounded-xl shadow-lg">
+//             <h2 className="text-lg font-bold text-yellow-300 mb-3">
+//               Available Players
+//             </h2>
+//             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm max-h-80 overflow-y-auto">
+//               {availablePlayers.length > 0 ? (
+//                 availablePlayers.map((p) => (
+//                   <div
+//                     key={p.id}
+//                     className="p-2 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105 hover:shadow-[0_0_8px_#FACC15,0_0_16px_#F59E0B]"
+//                     style={{
+//                       background:
+//                         getColor(p) === "green"
+//                           ? "#065F46"
+//                           : getColor(p) === "red"
+//                           ? "#991B1B"
+//                           : "#1F2937",
+//                     }}
+//                   >
+//                     <span className="truncate">{p.name}</span>
+//                     <span className="text-xs opacity-75">ID:{p.id}</span>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-center text-gray-400 col-span-full py-4">
+//                   No players left! 😥
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+
+//           {/* Spin Wheel */}
+//           <section className="md:col-span-6 flex flex-col items-center">
+//             <div className="relative w-full max-w-[280px] sm:max-w-[400px] md:max-w-[580px] h-[280px] sm:h-[400px] md:h-[580px] flex items-center justify-center">
+//               <div className="absolute w-full h-full">
+//                 <div
+//                   ref={wheelRef}
+//                   className="rounded-full shadow-2xl border-4 sm:border-6 md:border-8 border-yellow-500 overflow-hidden relative"
+//                   style={{
+//                     transition: spinning
+//                       ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                       : "none",
+//                     transform: `rotate(${angle}deg)`,
+//                     background:
+//                       "radial-gradient(circle at center, #FDE68A, #D97706)",
+//                   }}
+//                 >
+//                   {pocketsElements}
+//                   {/* Center */}
+//                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 sm:w-24 md:w-48 h-16 sm:h-24 md:h-48 rounded-full bg-yellow-600 flex items-center justify-center text-sm sm:text-xl md:text-3xl font-extrabold border-2 sm:border-4 border-yellow-700 text-black shadow-inner">
+//                     SPiN
+//                   </div>
+//                 </div>
+//                 {/* Pointer */}
+//                 <div
+//                   className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+//                   style={{ top: -10 }}
+//                 >
+//                   <div className="w-0 h-0 border-l-[10px] sm:border-l-[14px] md:border-l-[18px] border-l-transparent border-r-[10px] sm:border-r-[14px] md:border-r-[18px] border-r-transparent border-b-[20px] sm:border-b-[28px] md:border-b-[32px] border-b-yellow-400 mx-auto shadow-[0_0_8px_#FACC15,0_0_16px_#F59E0B]"></div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Controls */}
+//             <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center">
+//               <button
+//                 onClick={spin}
+//                 disabled={spinning || availablePlayers.length === 0}
+//                 className={`px-6 py-2 rounded-full font-bold text-base transition-all duration-300 ${
+//                   spinning || availablePlayers.length === 0
+//                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+//                     : "bg-yellow-400 text-black hover:bg-yellow-300 active:scale-95"
+//                 }`}
+//               >
+//                 {spinning ? "Spinning..." : "SPIN"}
+//               </button>
+//               <div className="bg-gray-800 p-3 rounded-lg shadow-inner text-white font-mono text-sm">
+//                 Result:{" "}
+//                 <span className="font-bold ml-2 text-yellow-300">
+//                   {result ? `${result.name} (ID:${result.id})` : "—"}
+//                 </span>
+//               </div>
+//             </div>
+//           </section>
+
+//           {/* History */}
+//           <aside className="md:col-span-3 bg-gray-800 p-3 rounded-xl shadow-lg">
+//             <h2 className="text-lg font-bold text-yellow-300 mb-3">History</h2>
+//             <div className="space-y-2 text-sm max-h-80 overflow-y-auto">
+//               {history.length ? (
+//                 history.map((h, i) => (
+//                   <div
+//                     key={i}
+//                     className="flex items-center justify-between p-2 rounded-lg border border-gray-600 transition-transform hover:scale-105 hover:shadow-[0_0_8px_#FACC15,0_0_16px_#F59E0B]"
+//                     style={{ background: "#1F2937" }}
+//                   >
+//                     <div className="font-mono text-yellow-200">#{2350 + i}</div>
+//                     <div className="font-bold truncate">
+//                       {h.name} (ID:{h.id})
+//                     </div>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-xs opacity-60 text-center py-4">
+//                   No draws yet. Press SPIN to start.
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+//         </main>
+
+//         {/* Winner Modal */}
+//         {modalVisible && result && (
+//           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+//             <div className="bg-gray-900 text-white p-6 rounded-2xl shadow-2xl text-center max-w-md border-4 border-yellow-400 relative">
+//               <div className="relative w-40 sm:w-52 h-40 sm:h-52 mx-auto">
+//                 <svg
+//                   viewBox="0 0 300 300"
+//                   className="w-full h-full animate-spin-slow"
+//                 >
+//                   <defs>
+//                     <path
+//                       id="circlePath"
+//                       d="M 150, 150 m -100, 0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0"
+//                     />
+//                   </defs>
+//                   <text fill="#FACC15" fontSize="14" fontWeight="bold">
+//                     <textPath
+//                       href="#circlePath"
+//                       startOffset="0%"
+//                       textAnchor="middle"
+//                       letterSpacing="4"
+//                     >
+//                       🎉 Winner: {result.name} 🎉 Winner: {result.name} 🎉
+//                     </textPath>
+//                   </text>
+//                 </svg>
+//                 <div className="absolute inset-0 flex flex-col items-center justify-center">
+//                   <h2 className="text-lg sm:text-xl font-extrabold text-yellow-400 mb-1">
+//                     🎊 Winner 🎊
+//                   </h2>
+//                   <p className="text-base sm:text-lg font-bold">{result.name}</p>
+//                   <p className="text-xs sm:text-sm opacity-80">ID:{result.id}</p>
+//                 </div>
+//               </div>
+//               <p className="text-xs text-gray-400 mt-4">
+//                 Closing in 10 seconds...
+//               </p>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useMemo, useRef, useState } from "react";
+// import Api from "../api/Api";
+
+// export default function CasinoPage() {
+//   type Player = {
+//     id: number;
+//     name: string;
+//   };
+
+//   // ডেমো ডেটা (যদি API fail করে fallback হিসেবে)
+//   const initialPlayers = useMemo(
+//     () =>
+//       Array.from({ length: 15 }, (_, i) => ({
+//         id: 1000 + i,
+//         name: `Player ${i + 1}`,
+//       })),
+//     []
+//   );
+
+//   type Item = {
+//     id: number;
+//   };
+
+//   const getColor = (n: Item) =>
+//     n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red" : "black";
+
+//   const [angle, setAngle] = useState(0);
+//   const [spinning, setSpinning] = useState(false);
+//   const [result, setResult] = useState<Player | null>(null);
+//   const [history, setHistory] = useState<Player[]>([]);
+//   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const wheelRef = useRef<HTMLDivElement | null>(null);
+
+//   const spin = () => {
+//     if (spinning || availablePlayers.length === 0) return;
+//     setSpinning(true);
+
+//     const pickIndex = Math.floor(Math.random() * availablePlayers.length);
+//     const win = availablePlayers[pickIndex];
+//     const pockets = availablePlayers.length;
+//     const degPer = 360 / pockets;
+//     const fullSpins = 6 + Math.floor(Math.random() * 3);
+//     const target = fullSpins * 360 + degPer * pickIndex;
+
+//     setAngle((prev) => prev + target);
+
+//     const duration = 6000; // 6s spin
+//     setTimeout(() => {
+//       setResult(win);
+//       setHistory((h) => [win, ...h].slice(0, 12));
+//       setAvailablePlayers((prev) => prev.filter((p) => p.id !== win?.id));
+//       setSpinning(false);
+
+//       setModalVisible(true);
+//       setTimeout(() => setModalVisible(false), 10000); // 10 সেকেন্ড পরে hide
+//     }, duration);
+//   };
+
+//   useEffect(() => {
+//     getUsers();
+
+//     const handleKey = (e: KeyboardEvent) => {
+//       if (e.key === "Enter") {
+//         spin();
+//       }
+//     };
+//     window.addEventListener("keydown", handleKey);
+//     return () => window.removeEventListener("keydown", handleKey);
+//   }, [spinning, availablePlayers]);
+
+//   const getUsers = () => {
+//     Api.get(`/all_users`)
+//       .then((res) => {
+//         setAvailablePlayers(res.data.data);
+//       })
+//       .catch((err) => {
+//         console.error("Error:", err);
+//         setAvailablePlayers(initialPlayers);
+//       });
+//   };
+
+//   const pocketsElements = availablePlayers.map((p, i) => {
+//     const degPer = 360 / availablePlayers.length;
+//     const rotation = i * degPer;
+//     const color = getColor(p);
+//     return (
+//       <div
+//         key={p.id}
+//         className="absolute top-1/2 left-1/2 w-28 h-14 -translate-x-1/2 -translate-y-1/2 origin-bottom-center flex flex-col items-center justify-center text-xs font-semibold rounded-t-lg shadow-sm border border-gray-400 p-1 sm:p-2"
+//         style={{
+//           transform: `rotate(${rotation}deg) translateY(-220px) rotate(${-rotation}deg)`,
+//           background:
+//             color === "green"
+//               ? "#10B981"
+//               : color === "red"
+//               ? "#EF4444"
+//               : "#000000",
+//           color: "white",
+//         }}
+//       >
+//         <span className="text-xs sm:text-sm font-bold">{p.name}</span>
+//         <span className="text-[10px] sm:text-xs opacity-75">ID: {p.id}</span>
+//       </div>
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-6 font-sans">
+//       <div className="max-w-7xl mx-auto">
+//         <header className="flex items-center justify-between mb-6">
+//           <h1 className="text-lg sm:text-2xl font-extrabold text-yellow-400 tracking-wider">
+//             SPiN WiN
+//           </h1>
+//           <div className="text-xs sm:text-sm">
+//             Current Draw:{" "}
+//             <span className="font-mono text-yellow-200">
+//               #{history.length ? 2358 + history.length : 2358}
+//             </span>
+//           </div>
+//         </header>
+
+//         <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
+//           {/* Left panel */}
+//           <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
+//             <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-3">
+//               Available Players
+//             </h2>
+//             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm max-h-80 overflow-y-auto">
+//               {availablePlayers.length > 0 ? (
+//                 availablePlayers.map((p) => (
+//                   <div
+//                     key={p.id}
+//                     className="p-2 sm:p-3 rounded-lg flex flex-col items-center justify-center font-bold text-center border border-gray-600 transition-transform hover:scale-105"
+//                     style={{
+//                       background:
+//                         getColor(p) === "green"
+//                           ? "#065F46"
+//                           : getColor(p) === "red"
+//                           ? "#991B1B"
+//                           : "#1F2937",
+//                     }}
+//                   >
+//                     <span>{p.name}</span>
+//                     <span className="text-xs opacity-75">ID: {p.id}</span>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-center text-gray-400 col-span-full py-4">
+//                   No players left! 😥
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+
+//           {/* Center wheel */}
+//           <section className="md:col-span-6 flex flex-col items-center">
+//             <div className="relative w-full max-w-[500px] h-[500px] sm:max-w-[580px] sm:h-[580px] flex items-center justify-center">
+//               <div className="absolute w-full h-full">
+//                 <div
+//                   ref={wheelRef}
+//                   className="rounded-full shadow-2xl border-4 sm:border-8 border-yellow-500 overflow-hidden relative w-full h-full"
+//                   style={{
+//                     transition: spinning
+//                       ? "transform 6s cubic-bezier(.08,.8,.2,1)"
+//                       : "none",
+//                     transform: `rotate(${angle}deg)`,
+//                     background:
+//                       "radial-gradient(circle at center, #FDE68A, #D97706)",
+//                   }}
+//                 >
+//                   {pocketsElements}
+//                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-yellow-600 flex items-center justify-center text-xl sm:text-3xl font-extrabold border-2 sm:border-4 border-yellow-700 text-black shadow-inner">
+//                     SPiN
+//                   </div>
+//                 </div>
+//                 {/* Pointer */}
+//                 <div
+//                   className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+//                   style={{ top: -12 }}
+//                 >
+//                   <div className="w-0 h-0 border-l-[14px] sm:border-l-[18px] border-l-transparent border-r-[14px] sm:border-r-[18px] border-r-transparent border-b-[28px] sm:border-b-[32px] border-b-yellow-400 mx-auto"></div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Controls */}
+//             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-4 items-center">
+//               <button
+//                 onClick={spin}
+//                 disabled={spinning || availablePlayers.length === 0}
+//                 className={`px-6 sm:px-8 py-2 sm:py-3 rounded-full font-bold text-base sm:text-lg transition-all duration-300 ${
+//                   spinning || availablePlayers.length === 0
+//                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+//                     : "bg-yellow-400 text-black hover:bg-yellow-300 active:scale-95"
+//                 }`}
+//               >
+//                 {spinning ? "Spinning..." : "SPIN"}
+//               </button>
+//               <div className="bg-gray-800 p-3 sm:p-4 rounded-lg shadow-inner text-white font-mono text-sm sm:text-base">
+//                 Result:{" "}
+//                 <span className="font-bold ml-2 text-yellow-300">
+//                   {result === null ? "—" : `${result.name} (ID: ${result.id})`}
+//                 </span>
+//               </div>
+//             </div>
+//           </section>
+
+//           {/* Right panel */}
+//           <aside className="md:col-span-3 bg-gray-800 p-4 rounded-xl shadow-lg">
+//             <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-3">
+//               History
+//             </h2>
+//             <div className="space-y-2 text-sm max-h-80 overflow-y-auto">
+//               {history.length ? (
+//                 history.map((h, i) => (
+//                   <div
+//                     key={i}
+//                     className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-600"
+//                     style={{ background: "#1F2937" }}
+//                   >
+//                     <div className="font-mono text-yellow-200">
+//                       #{2350 + i}
+//                     </div>
+//                     <div className="font-bold">
+//                       {h.name} (ID: {h.id})
+//                     </div>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="text-xs opacity-60 text-center py-4">
+//                   No draws yet. Press SPIN to start.
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+//         </main>
+
+//         {/* Modal */}
+//         {modalVisible && result && (
+//           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+//             <div className="bg-gray-900 text-white p-6 sm:p-10 rounded-2xl shadow-2xl text-center max-w-md border-4 border-yellow-400 relative overflow-hidden">
+//               {/* Winner Circle Name */}
+//               <div className="relative w-52 h-52 sm:w-64 sm:h-64 mx-auto">
+//                 <svg
+//                   viewBox="0 0 300 300"
+//                   className="w-full h-full animate-spin-slow"
+//                 >
+//                   <defs>
+//                     <path
+//                       id="circlePath"
+//                       d="M 150, 150 m -100, 0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0"
+//                     />
+//                   </defs>
+//                   <text fill="#FACC15" fontSize="16" fontWeight="bold">
+//                     <textPath
+//                       href="#circlePath"
+//                       startOffset="0%"
+//                       textAnchor="middle"
+//                       letterSpacing="4"
+//                     >
+//                       🎉 Winner: {result.name} 🎉 Winner: {result.name} 🎉
+//                     </textPath>
+//                   </text>
+//                 </svg>
+
+//                 {/* Winner Name in Middle */}
+//                 <div className="absolute inset-0 flex flex-col items-center justify-center">
+//                   <h2 className="text-xl sm:text-3xl font-extrabold text-yellow-400 mb-2">
+//                     🎊 Winner 🎊
+//                   </h2>
+//                   <p className="text-lg sm:text-2xl font-bold">
+//                     {result.name}
+//                   </p>
+//                   <p className="text-sm sm:text-lg opacity-80">
+//                     ID: {result.id}
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <p className="text-xs text-gray-400 mt-6">
+//                 This window will close automatically in 10 seconds
+//               </p>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
