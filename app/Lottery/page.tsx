@@ -14,8 +14,13 @@ export default function CasinoPage() {
     []
   );
 
-  const getColor = (n) => (n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red" : "black");
   
+type Item = {
+  id: number;
+};
+
+const getColor = (n: Item) => (n.id % 3 === 0 ? "green" : n.id % 2 === 0 ? "red" : "black");
+
 
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -25,9 +30,12 @@ export default function CasinoPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const wheelRef = useRef(null);
 
+
   const spin = () => {
+    
     if (spinning || availablePlayers.length === 0) return;
     setSpinning(true);
+    
 
     const pickIndex = Math.floor(Math.random() * availablePlayers.length);
     const win = availablePlayers[pickIndex];
@@ -66,13 +74,9 @@ console.log(availablePlayers);
 console.log('====================================');
 
 
-  const spin = () => {
-    console.log("Spinning!");
-    // এখানে তোমার spin logic লিখো
-    spin();
-  };
 
-    const handleKey = (e: KeyboardEvent) => {
+
+    const handleKey = (e) => {
       if (e.key === "Enter") {
         spin();
       }
@@ -102,7 +106,8 @@ console.log('====================================');
       })
       .catch((err) => {
         console.error("Earning History Error:", err);
-               setAvailablePlayers(initialPlayers);
+
+   setAvailablePlayers(initialPlayers);
 
       })
       .finally(() => 
@@ -138,6 +143,8 @@ console.log('====================================');
       </div>
     );
   });
+
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 font-sans">
@@ -204,7 +211,7 @@ console.log('====================================');
                   }}
                 >
                   {pocketsElements}
-                  <div onClick={()=>spin()}  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-yellow-600 flex items-center justify-center text-3xl font-extrabold border-4 border-yellow-700 text-black shadow-inner">
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-yellow-600 flex items-center justify-center text-3xl font-extrabold border-4 border-yellow-700 text-black shadow-inner">
                     SPiN
                   </div>
                 </div>
