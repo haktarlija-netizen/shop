@@ -70,7 +70,7 @@ export default function AllCategorySection() {
       icon: <Gift size={36} />,
       img: "https://images.unsplash.com/photo-1603297631957-4b2c6313f93e",
       color: "from-red-500 to-pink-600",
-      link: "/lottery",
+      link: "/Lottery",
     },
     {
       title: "অন্য সেবা",
