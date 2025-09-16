@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Api from '../../api/Api';
+import Api from '../../../api/Api';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -14,14 +14,16 @@ export default function Home() {
 
   const params = useParams();
   const currentCategory = params?.catagori as string | undefined;
+  const barnds = params?.brandname as string | undefined;
 
+  
   // 📡 API Data Load
   useEffect(() => {
     const fetchData = async () => {
       if (!currentCategory) return;
       setLoading(true);
       try {
-        const res = await Api.get(`/get_all_product/${currentCategory}`);
+        const res = await Api.get(`/get_all_product_brandName/${barnds}/${currentCategory}`);
         setProducts(res.data.message);
       } catch (err) {
         console.error('❌ Fetch error:', err);
@@ -40,7 +42,7 @@ export default function Home() {
     if (brand) {
       setBrnadnms(product.brand);
     } else {
-      setBrand(product.model);
+      setBrand(product.catagori);
     }
   };
 
@@ -48,7 +50,7 @@ export default function Home() {
     <main className="p-6 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all">
       {/* 🔄 Loading State */}
 
-      {brand}
+      {'brand names x'+currentCategory} {barnds}
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 p-4 animate-pulse">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -63,8 +65,6 @@ export default function Home() {
           {products.map((product: any) => (
             <motion.div
               key={product.id}
-
-
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => handleProductClick(product)}
@@ -78,22 +78,22 @@ export default function Home() {
                   src={
                     product.img
                       ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads_product/${product.img}`
-                      : product.imglink
+                      : product.imglink           //this is a link img 
                   }
-                  alt={product.name || 'Product Image'}
+                  alt={product.brand || 'Product Image'}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-               
-                    onClick={() => window.location.href = `/products/${currentCategory}/${product.catagori}`}
-               />
+                
+                
+                 onClick={() => window.location.href = `/products/${currentCategory}/${product.catagori}/${product.brand}`}
+                />
               </div>
 
               {/* Overlay Text */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-3">
                 <h3 className="text-sm md:text-base font-semibold drop-shadow-lg">
-                  {product.catagori}
+                  {!brand ? product.brand : product.catagori}
                 </h3>
-            
-        
+              
               </div>
             </motion.div>
           ))}
