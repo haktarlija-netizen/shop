@@ -1,145 +1,159 @@
 
 
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import Head from "next/head";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  category: string;
-}
-
-interface Props {
-  product: Product;
-}
-
-export default function ProductView(){
-  const [quantity, setQuantity] = useState(1);
 
 
+import React from 'react'
 
-
-
-
-  const addToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const exist = cart.find((item: any) => item.id === product.id);
-    if (exist) {
-      exist.quantity += quantity;
-    } else {
-      cart.push({ ...product, quantity });
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Product added to cart!");
-  };
-
+export default function productPages() {
   return (
-    <>
-      {/* SEO Meta */}
-      <Head>
-        <title>{product.name} | MyShop</title>
-        <meta name="description" content={product.description} />
-        <meta property="og:title" content={product.name} />
-        <meta property="og:description" content={product.description} />
-        <meta property="og:image" content={product.image} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Product",
-              name: product.name,
-              image: product.image,
-              description: product.description,
-              sku: product.id,
-              offers: {
-                "@type": "Offer",
-                priceCurrency: "BDT",
-                price: product.price,
-                availability: "https://schema.org/InStock",
-              },
-            }),
-          }}
-        />
-      </Head>
-
-      {/* Product Section */}
-      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
-        {/* Product Image */}
-        <motion.div
-          className="md:w-1/2 w-full rounded-lg overflow-hidden cursor-zoom-in"
-          whileHover={{ scale: 1.05 }}
-        >
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={600}
-            height={600}
-            className="w-full h-auto object-cover rounded-lg"
-          />
-        </motion.div>
-
-        {/* Product Details */}
-        <div className="md:w-1/2 flex flex-col gap-4">
-          <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
-          <p className="text-2xl text-green-600 font-semibold">৳ {product.price}</p>
-          <p className="text-gray-700 text-base md:text-lg">{product.description}</p>
-
-          {/* Quantity Selector */}
-          <div className="flex items-center gap-3 mt-4">
-            <button
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
-            >
-              -
-            </button>
-            <span className="text-lg">{quantity}</span>
-            <button
-              onClick={() => setQuantity((q) => q + 1)}
-              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
-            >
-              +
-            </button>
-          </div>
-
-          {/* Add to Cart */}
-          <motion.button
-            onClick={addToCart}
-            whileTap={{ scale: 0.95 }}
-            className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition w-full md:w-auto"
-          >
-            Add to Cart
-          </motion.button>
-
-          {/* Category */}
-          <p className="text-gray-500 mt-2">Category: {product.category}</p>
-        </div>
-      </div>
-
-      {/* Reviews Section */}
-      <div className="max-w-7xl mx-auto p-4 md:p-8 border-t border-gray-200 mt-10">
-        <h2 className="text-2xl font-bold mb-5">Reviews</h2>
-        <div className="flex flex-col gap-4">
-          <div className="p-3 border rounded">
-            <p className="font-semibold">Rashidul</p>
-            <p className="text-gray-600">★★★★★ Amazing product!</p>
-          </div>
-          <div className="p-3 border rounded">
-            <p className="font-semibold">Sadia</p>
-            <p className="text-gray-600">★★★★ Very good, recommended.</p>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+    <div>product view page</div>
+  )
 }
+
+
+
+
+
+// "use client";
+
+// import { useState } from "react";
+// import Image from "next/image";
+// import { motion } from "framer-motion";
+// import Head from "next/head";
+
+// interface Product {
+//   id: number;
+//   name: string;
+//   price: number;
+//   description: string;
+//   image: string;
+//   category: string;
+// }
+
+// interface Props {
+//   product: Product;
+// }
+
+// export default function ProductView(){
+//   const [quantity, setQuantity] = useState(1);
+
+
+
+
+
+
+//   const addToCart = () => {
+//     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+//     const exist = cart.find((item: any) => item.id === product.id);
+//     if (exist) {
+//       exist.quantity += quantity;
+//     } else {
+//       cart.push({ ...product, quantity });
+//     }
+//     localStorage.setItem("cart", JSON.stringify(cart));
+//     alert("Product added to cart!");
+//   };
+
+//   return (
+//     <>
+//       {/* SEO Meta */}
+//       <Head>
+//         <title>{product.name} | MyShop</title>
+//         <meta name="description" content={product.description} />
+//         <meta property="og:title" content={product.name} />
+//         <meta property="og:description" content={product.description} />
+//         <meta property="og:image" content={product.image} />
+//         <script
+//           type="application/ld+json"
+//           dangerouslySetInnerHTML={{
+//             __html: JSON.stringify({
+//               "@context": "https://schema.org",
+//               "@type": "Product",
+//               name: product.name,
+//               image: product.image,
+//               description: product.description,
+//               sku: product.id,
+//               offers: {
+//                 "@type": "Offer",
+//                 priceCurrency: "BDT",
+//                 price: product.price,
+//                 availability: "https://schema.org/InStock",
+//               },
+//             }),
+//           }}
+//         />
+//       </Head>
+
+//       {/* Product Section */}
+//       <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
+//         {/* Product Image */}
+//         <motion.div
+//           className="md:w-1/2 w-full rounded-lg overflow-hidden cursor-zoom-in"
+//           whileHover={{ scale: 1.05 }}
+//         >
+//           <Image
+//             src={product.image}
+//             alt={product.name}
+//             width={600}
+//             height={600}
+//             className="w-full h-auto object-cover rounded-lg"
+//           />
+//         </motion.div>
+
+//         {/* Product Details */}
+//         <div className="md:w-1/2 flex flex-col gap-4">
+//           <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
+//           <p className="text-2xl text-green-600 font-semibold">৳ {product.price}</p>
+//           <p className="text-gray-700 text-base md:text-lg">{product.description}</p>
+
+//           {/* Quantity Selector */}
+//           <div className="flex items-center gap-3 mt-4">
+//             <button
+//               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+//               className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
+//             >
+//               -
+//             </button>
+//             <span className="text-lg">{quantity}</span>
+//             <button
+//               onClick={() => setQuantity((q) => q + 1)}
+//               className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
+//             >
+//               +
+//             </button>
+//           </div>
+
+//           {/* Add to Cart */}
+//           <motion.button
+//             onClick={addToCart}
+//             whileTap={{ scale: 0.95 }}
+//             className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition w-full md:w-auto"
+//           >
+//             Add to Cart
+//           </motion.button>
+
+//           {/* Category */}
+//           <p className="text-gray-500 mt-2">Category: {product.category}</p>
+//         </div>
+//       </div>
+
+//       {/* Reviews Section */}
+//       <div className="max-w-7xl mx-auto p-4 md:p-8 border-t border-gray-200 mt-10">
+//         <h2 className="text-2xl font-bold mb-5">Reviews</h2>
+//         <div className="flex flex-col gap-4">
+//           <div className="p-3 border rounded">
+//             <p className="font-semibold">Rashidul</p>
+//             <p className="text-gray-600">★★★★★ Amazing product!</p>
+//           </div>
+//           <div className="p-3 border rounded">
+//             <p className="font-semibold">Sadia</p>
+//             <p className="text-gray-600">★★★★ Very good, recommended.</p>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
 
 
 

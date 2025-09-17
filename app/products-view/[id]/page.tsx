@@ -1,234 +1,241 @@
+import React from 'react'
 
-
-
-
-
-
-
-
-
-
-"use client";
-
-import Head from "next/head";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import Api from '../../api/Api'
-
-
-
-
-
-
-
-
-
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  category: string;
-  brand?: string;
-  sku?: string;
-  reviews?: { name: string; rating: number; comment: string }[];
-  faqs?: { question: string; answer: string }[];
-}
-
-interface Props {
-  product?: Product;
-}
-
-export default function SEOProductPage() {
-
-
-  const [state, setstate] = useState('')
-  const [lodings, setLoading] = useState(false)
-
-  const [product, setProducts] = useState<any[]>([]);
-
-
-
-
-
-
-
-  const params = useParams();
-  const currentIdget = params?.id as string | undefined;
-
-
-
-
-
-
-
-
-
-  // 📡 API Data Load
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!currentIdget) return;
-      setLoading(true);
-      try {
-        const res = await Api.get(`/productdateid/${currentIdget}`);
-        setProducts(res.data.message);
-      } catch (err) {
-        console.error('❌ Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-  }, [])
-
-
-
-  if (!product) {
-    return <div className="w-full h-screen flex items-center justify-center text-lg">  Loading Product...{currentIdget}____________.....</div>;
-  }
-
+export default function products() {
   return (
-    <>
-      <Head>
-        <title>{'product.name'} | MyShop</title>
-        <meta name="description" content={'product.description'} />
-        <meta name="keywords" content={`${'product.name'}, ${'product.category'}, Buy ${'product.name'}`} />
-        <meta name="robots" content="index, follow" />
-
-        {/* OpenGraph */}
-        <meta property="og:title" content={'product.name'} />
-        <meta property="og:description" content={'product.description'} />
-        <meta property="og:image" content={'product.image'} />
-        <meta property="og:type" content="product" />
-        <meta property="og:url" content={`https://myshop.com/product/${'product.id'}`} />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={'product.name'} />
-        <meta name="twitter:description" content={'product.description'} />
-        <meta name="twitter:image" content={'product.image'} />
-
-        {/* JSON-LD Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "Product",
-              name: 'product.name',
-              image: ['product.image'],
-              description: 'product.description',
-              sku:' product.sku' || 'product.id',
-              brand: { "@type": "Brand", name: 'product.brand' || "MyShop" },
-              aggregateRating:'\ product.reviews'
-                ? {
-                    "@type": "AggregateRating",
-                    ratingValue:
-                     ' product.reviews.reduce((acc, r) => acc + r.rating, 0) / product.reviews.length',
-                    reviewCount:' product.reviews.length',
-                  }
-                : undefined,
-              offers: {
-                "@type": "Offer",
-                url: `https://myshop.com/product/${'product.id'}`,
-                priceCurrency: "BDT",
-                price: 'product.price',
-                availability: "https://schema.org/InStock",
-              },
-            //   review: product.reviews?.map((r) => ({
-            //     "@type": "Review",
-            //     author: r.name,
-            //     reviewRating: {
-            //       "@type": "Rating",
-            //       ratingValue: r.rating,
-            //     },
-            //     reviewBody: r.comment,
-            //   })),
-              mainEntityOfPage: {
-                "@type": "WebPage",
-                "@id": `https://myshop.com/product/${`product.id`}`,
-              },
-            }),
-          }}
-        />
-      </Head>
-
-      {/* Breadcrumb JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              { "@type": "ListItem", position: 1, name: "Home", item: "https://myshop.com" },
-              { "@type": "ListItem", position: 2, name: `product.category`, item: `https://myshop.com/category/${`product.category`}` },
-              { "@type": "ListItem", position: 3, name:` product.name`, item: `https://myshop.com/product/${`product.id`}` },
-            ],
-          }),
-        }}
-      />
-
-      <main className="max-w-6xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
-        {/* Product Image */}
-        <div className="md:w-1/2 w-full rounded-lg overflow-hidden">
-          <Image
-            src={`product.image`}
-            alt={`product.name`}
-            width={600}
-            height={600}
-            className="w-full h-auto object-cover rounded-lg"
-            priority
-          />
-        </div>
-
-        {/* Product Details */}
-        <div className="md:w-1/2 flex flex-col gap-4">
-          <h1 className="text-3xl md:text-4xl font-bold">{`product.name`}</h1>
-          <p className="text-2xl text-green-600 font-semibold">৳ {`product.price`}</p>
-          <p className="text-gray-700 text-base md:text-lg">{`product.description`}</p>
-          <p className="text-gray-500 mt-2">Category: {`product.category`}</p>
-          {`product.brand` && <p className="text-gray-500">Brand: {`product.brand`}</p>}
-          {`product.sku` && <p className="text-gray-500">SKU: {`product.sku`}</p>}
-        </div>
-      </main>
-
-      {/* Reviews Section
-      {product.reviews && product.reviews.length > 0 && (
-        <div className="max-w-6xl mx-auto p-4 md:p-8 border-t border-gray-200 mt-10">
-          <h2 className="text-2xl font-bold mb-5">Customer Reviews</h2>
-          <div className="flex flex-col gap-4">
-            {product.reviews.map((r, i) => (
-              <div key={i} className="p-3 border rounded">
-                <p className="font-semibold">{r.name}</p>
-                <p className="text-yellow-500">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</p>
-                <p className="text-gray-600">{r.comment}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* FAQ Section */}
-       {product.faqs && product.faqs.length > 0 && (
-        <div className="max-w-6xl mx-auto p-4 md:p-8 border-t border-gray-200 mt-10">
-          <h2 className="text-2xl font-bold mb-5">FAQs</h2>
-          <div className="flex flex-col gap-4">
-            {product.faqs.map((f, i) => (
-              <div key={i} className="p-3 border rounded">
-                <p className="font-semibold">{f.question}</p>
-                <p className="text-gray-600">{f.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}  
-    </>
-  );
+    <div>product videw page</div>
+  )
 }
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import Head from "next/head";
+// import Image from "next/image";
+// import { useParams } from "next/navigation";
+// import { use, useEffect, useState } from "react";
+// import Api from '../../api/Api'
+
+
+
+
+
+
+
+
+
+
+// interface Product {
+//   id: number;
+//   name: string;
+//   price: number;
+//   description: string;
+//   image: string;
+//   category: string;
+//   brand?: string;
+//   sku?: string;
+//   reviews?: { name: string; rating: number; comment: string }[];
+//   faqs?: { question: string; answer: string }[];
+// }
+
+// interface Props {
+//   product?: Product;
+// }
+
+// export default function SEOProductPage() {
+
+
+//   const [state, setstate] = useState('')
+//   const [lodings, setLoading] = useState(false)
+
+//   const [product, setProducts] = useState<any[]>([]);
+
+
+
+
+
+
+
+//   const params = useParams();
+//   const currentIdget = params?.id as string | undefined;
+
+
+
+
+
+
+
+
+
+//   // 📡 API Data Load
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       if (!currentIdget) return;
+//       setLoading(true);
+//       try {
+//         const res = await Api.get(`/productdateid/${currentIdget}`);
+//         setProducts(res.data.message);
+//       } catch (err) {
+//         console.error('❌ Fetch error:', err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+
+//   }, [])
+
+
+
+//   if (!product) {
+//     return <div className="w-full h-screen flex items-center justify-center text-lg">  Loading Product...{currentIdget}____________.....</div>;
+//   }
+
+//   return (
+//     <>
+//       <Head>
+//         <title>{'product.name'} | MyShop</title>
+//         <meta name="description" content={'product.description'} />
+//         <meta name="keywords" content={`${'product.name'}, ${'product.category'}, Buy ${'product.name'}`} />
+//         <meta name="robots" content="index, follow" />
+
+//         {/* OpenGraph */}
+//         <meta property="og:title" content={'product.name'} />
+//         <meta property="og:description" content={'product.description'} />
+//         <meta property="og:image" content={'product.image'} />
+//         <meta property="og:type" content="product" />
+//         <meta property="og:url" content={`https://myshop.com/product/${'product.id'}`} />
+
+//         {/* Twitter Card */}
+//         <meta name="twitter:card" content="summary_large_image" />
+//         <meta name="twitter:title" content={'product.name'} />
+//         <meta name="twitter:description" content={'product.description'} />
+//         <meta name="twitter:image" content={'product.image'} />
+
+//         {/* JSON-LD Structured Data */}
+//         <script
+//           type="application/ld+json"
+//           dangerouslySetInnerHTML={{
+//             __html: JSON.stringify({
+//               "@context": "https://schema.org/",
+//               "@type": "Product",
+//               name: 'product.name',
+//               image: ['product.image'],
+//               description: 'product.description',
+//               sku:' product.sku' || 'product.id',
+//               brand: { "@type": "Brand", name: 'product.brand' || "MyShop" },
+//               aggregateRating:'\ product.reviews'
+//                 ? {
+//                     "@type": "AggregateRating",
+//                     ratingValue:
+//                      ' product.reviews.reduce((acc, r) => acc + r.rating, 0) / product.reviews.length',
+//                     reviewCount:' product.reviews.length',
+//                   }
+//                 : undefined,
+//               offers: {
+//                 "@type": "Offer",
+//                 url: `https://myshop.com/product/${'product.id'}`,
+//                 priceCurrency: "BDT",
+//                 price: 'product.price',
+//                 availability: "https://schema.org/InStock",
+//               },
+//             //   review: product.reviews?.map((r) => ({
+//             //     "@type": "Review",
+//             //     author: r.name,
+//             //     reviewRating: {
+//             //       "@type": "Rating",
+//             //       ratingValue: r.rating,
+//             //     },
+//             //     reviewBody: r.comment,
+//             //   })),
+//               mainEntityOfPage: {
+//                 "@type": "WebPage",
+//                 "@id": `https://myshop.com/product/${`product.id`}`,
+//               },
+//             }),
+//           }}
+//         />
+//       </Head>
+
+//       {/* Breadcrumb JSON-LD */}
+//       <script
+//         type="application/ld+json"
+//         dangerouslySetInnerHTML={{
+//           __html: JSON.stringify({
+//             "@context": "https://schema.org",
+//             "@type": "BreadcrumbList",
+//             "itemListElement": [
+//               { "@type": "ListItem", position: 1, name: "Home", item: "https://myshop.com" },
+//               { "@type": "ListItem", position: 2, name: `product.category`, item: `https://myshop.com/category/${`product.category`}` },
+//               { "@type": "ListItem", position: 3, name:` product.name`, item: `https://myshop.com/product/${`product.id`}` },
+//             ],
+//           }),
+//         }}
+//       />
+
+//       <main className="max-w-6xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
+//         {/* Product Image */}
+//         <div className="md:w-1/2 w-full rounded-lg overflow-hidden">
+//           <Image
+//             src={`product.image`}
+//             alt={`product.name`}
+//             width={600}
+//             height={600}
+//             className="w-full h-auto object-cover rounded-lg"
+//             priority
+//           />
+//         </div>
+
+//         {/* Product Details */}
+//         <div className="md:w-1/2 flex flex-col gap-4">
+//           <h1 className="text-3xl md:text-4xl font-bold">{`product.name`}</h1>
+//           <p className="text-2xl text-green-600 font-semibold">৳ {`product.price`}</p>
+//           <p className="text-gray-700 text-base md:text-lg">{`product.description`}</p>
+//           <p className="text-gray-500 mt-2">Category: {`product.category`}</p>
+//           {`product.brand` && <p className="text-gray-500">Brand: {`product.brand`}</p>}
+//           {`product.sku` && <p className="text-gray-500">SKU: {`product.sku`}</p>}
+//         </div>
+//       </main>
+
+//       {/* Reviews Section
+//       {product.reviews && product.reviews.length > 0 && (
+//         <div className="max-w-6xl mx-auto p-4 md:p-8 border-t border-gray-200 mt-10">
+//           <h2 className="text-2xl font-bold mb-5">Customer Reviews</h2>
+//           <div className="flex flex-col gap-4">
+//             {product.reviews.map((r, i) => (
+//               <div key={i} className="p-3 border rounded">
+//                 <p className="font-semibold">{r.name}</p>
+//                 <p className="text-yellow-500">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</p>
+//                 <p className="text-gray-600">{r.comment}</p>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* FAQ Section */}
+//        {product.faqs && product.faqs.length > 0 && (
+//         <div className="max-w-6xl mx-auto p-4 md:p-8 border-t border-gray-200 mt-10">
+//           <h2 className="text-2xl font-bold mb-5">FAQs</h2>
+//           <div className="flex flex-col gap-4">
+//             {product.faqs.map((f, i) => (
+//               <div key={i} className="p-3 border rounded">
+//                 <p className="font-semibold">{f.question}</p>
+//                 <p className="text-gray-600">{f.answer}</p>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}  
+//     </>
+//   );
+// }
 
 
 
