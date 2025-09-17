@@ -18,22 +18,6 @@ import CountUp from "react-countup";
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useCartStore } from "../../../../api/Carssotres";
 
 
@@ -51,16 +35,19 @@ import { strict } from 'assert';
 interface Product {
   id: number;
   name: string;
-  ram: string;
   model: string;
+  pricee: number;
+  reprice?: number;
+  qty: number;
+  img?: string;
+  imglink?: string;
+  rating?: number;
 }
 
 
 
 
-
-
-export default function CyberNeonParallax() {
+export default function CyberNeonParallax({ product }: { product: Product }) {
 
 
 
@@ -247,7 +234,7 @@ interface Product {
       flyingItem.remove();
       setCartCount((prev) => prev + 1);
 
-addToCart(Product);
+// addToCart(Product);
 
     }, 800);
   };
