@@ -50,7 +50,7 @@ export default function Home() {
     <main className="p-6 min-h-screen bg-gray-50 dark:bg-gray-900 transition-all">
       {/* 🔄 Loading State */}
 
-      {'brand names x'+currentCategory} {barnds}
+   
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 p-4 animate-pulse">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -91,7 +91,7 @@ export default function Home() {
               {/* Overlay Text */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-3">
                 <h3 className="text-sm md:text-base font-semibold drop-shadow-lg">
-                  {!brand ? product.brand : product.catagori}
+                  {product.brand}
                 </h3>
               
               </div>
