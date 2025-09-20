@@ -160,10 +160,27 @@ export default function HomeShowcasePage() {
 
 
 
+const [users, setUsers] = useState([]);
+  const [names, setNames] = useState([]);
+  const [images, setImages] = useState([]);
 
+  useEffect(() => {
+    const storedUsers = localStorage.getItem("userData");
+    if (storedUsers) {
+      const parsedUsers = JSON.parse(storedUsers);
+      setUsers(parsedUsers);
 
+      // ✅ আলাদা করে name এবং image বের করা
+      const onlyNames = parsedUsers.map(u => u.name);
+      const onlyImages = parsedUsers.map(u => u.image);
 
+      setNames(onlyNames);
+      setImages(onlyImages);
 
+      console.log("Names:", onlyNames);
+      console.log("Images:", onlyImages);
+    }
+  }, []);
 
 
 
@@ -215,7 +232,10 @@ useEffect(() => {
           >
             <Sparkles className="h-5 w-5 text-blue-600" />
           </motion.div>
-          <span className="font-bold tracking-tight text-lg">Rashidul Hub</span>
+          <span className="font-bold tracking-tight text-lg"> 
+
+         
+          </span>
           <span className="ml-2 hidden sm:inline-flex text-sm px-2 py-1 bg-gray-200 dark:bg-gray-800 rounded">
             Home
           </span>
@@ -246,8 +266,16 @@ useEffect(() => {
 
           {/* Profile Image */}
           <div className="relative">
-            <Image
-              src="https://i.pravatar.cc/100"
+            <img
+
+            src={
+                    images
+                      ? `https://localhost:8000/profile_users/${images}`
+                      : "https://i.pravatar.cc/100"
+                 
+
+            }
+         
               alt="profile"
               width={36}
               height={36}

@@ -35,6 +35,8 @@ export default function AllCategorySection() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [clickBursts, setClickBursts] = useState<Burst[]>([]);
 
+
+
   // ক্যাটাগরি ডাটা
   const categories = [
     {
