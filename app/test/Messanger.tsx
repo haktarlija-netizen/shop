@@ -1,12 +1,10 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { Send, Smile, Menu, X, Paperclip, Check } from "lucide-react";
 import Image from "next/image";
-// import data from "@emoji-mart/data";
-// import Picker from "@emoji-mart/react";
 
-const socket = io("http://localhost:5000", { autoConnect: false });
+let socket: Socket | null = null;
 
 export default function Messenger() {
   const [me] = useState({ id: 1, name: "Lija", avatar: "/me.png" });
@@ -21,10 +19,12 @@ export default function Messenger() {
   const [typingUser, setTypingUser] = useState<any | null>(null);
 
   const messagesRef = useRef<HTMLDivElement | null>(null);
-  let typingTimeout: NodeJS.Timeout;
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    socket.connect();
+    // socket init
+    socket = io("http://localhost:5000", { autoConnect: true });
+
     socket.emit("identify", String(me.id));
 
     socket.on("receive_message", (msg: any) => {
@@ -44,11 +44,17 @@ export default function Messenger() {
 
     socket.on("typing", (user: any) => setTypingUser(user));
     socket.on("stop_typing", (userId: number) => {
-      if (typingUser?.id === userId) setTypingUser(null);
+      setTypingUser((prev) => (prev?.id === userId ? null : prev));
     });
 
-    return () => socket.disconnect();
-  }, [me, activePeer, typingUser]);
+    // ✅ cleanup
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+      }
+    };
+  }, [me.id, activePeer?.id]);
 
   useEffect(() => {
     setFriends([
@@ -62,18 +68,19 @@ export default function Messenger() {
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
-    // mark messages as seen
-    if (activePeer) {
+
+    // seen mark
+    if (activePeer && socket) {
       messages.forEach((m) => {
         if (m.receiverId === me.id && !m.seen) {
           socket.emit("mark_seen", m.id);
         }
       });
     }
-  }, [messages, activePeer]);
+  }, [messages, activePeer, me.id]);
 
   const send = () => {
-    if ((!text.trim() && !file) || !activePeer) return;
+    if ((!text.trim() && !file) || !activePeer || !socket) return;
 
     const msg: any = {
       id: Date.now(),
@@ -94,11 +101,16 @@ export default function Messenger() {
 
   const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
+    if (!socket) return;
+
     socket.emit("typing", me);
 
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      socket.emit("stop_typing", me.id);
+    if (typingTimeout.current) {
+      clearTimeout(typingTimeout.current);
+    }
+
+    typingTimeout.current = setTimeout(() => {
+      socket?.emit("stop_typing", me.id);
     }, 2000);
   };
 
