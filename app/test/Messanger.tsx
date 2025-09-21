@@ -3,8 +3,25 @@ import React, { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { Send, Smile, Menu, X, Paperclip, Check } from "lucide-react";
 import Image from "next/image";
+import { number } from "framer-motion";
 
 let socket: Socket | null = null;
+
+
+
+
+interface Product {
+  id: number;
+  name: string;
+  model: string;
+  pricee: number;
+  reprice?: number;
+  qty: number;
+  img?: string;       // <-- যোগ করতে হবে
+  imglink?: string;   // <-- যোগ করতে হবে
+  rating?: number;
+}
+
 
 export default function Messenger() {
   const [me] = useState({ id: 1, name: "Lija", avatar: "/me.png" });
@@ -42,10 +59,14 @@ export default function Messenger() {
       );
     });
 
-    socket.on("typing", (user: any) => setTypingUser(user));
-    socket.on("stop_typing", (userId: number) => {
-      setTypingUser((prev: number) => (prev?.id === userId ? null : prev));
-    });
+socket.on("typing", (user: { id: number; name?: string }) => {
+  setTypingUser(user);
+});
+
+socket.on("stop_typing", (userId: number) => {
+  setTypingUser((prev) => (prev && prev.id === userId ? null : prev));
+});
+
 
     // ✅ cleanup
     return () => {
