@@ -8,14 +8,26 @@ const nextConfig = {
   reactStrictMode: true,
   eslint: { ignoreDuringBuilds: true },
 
+  
  
   images: {
 
      domains: ["localhost:3000", "my-shopings.com"], // এখানে img link যেই ডোমেইন থেকে আসবে সেটা লিখতে হবে
     remotePatterns: [
-      { protocol: "https", hostname: "i.pravatar.cc" },
-      { protocol: "https", hostname: "picsum.photos" },
-      { protocol: "https", hostname: "images.unsplash.com" }, // needed for your product images
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+        pathname: "/profile_users/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
 };

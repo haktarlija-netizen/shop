@@ -165,21 +165,30 @@ const [users, setUsers] = useState([]);
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    const storedUsers = localStorage.getItem("userData");
-    if (storedUsers) {
-      const parsedUsers = JSON.parse(storedUsers);
-      setUsers(parsedUsers);
-
-      // ✅ আলাদা করে name এবং image বের করা
-      const onlyNames = parsedUsers.map(u => u.name);
-      const onlyImages = parsedUsers.map(u => u.image);
-
-      setNames(onlyNames);
-      setImages(onlyImages);
-
-      console.log("Names:", onlyNames);
-      console.log("Images:", onlyImages);
+    
+    const userData = JSON.parse(localStorage.getItem('userData') || '[]');
+    if (userData[0]) {
+      setNames(userData[0].name || 'Guest');
+      setImages(userData[0].img || '');
     }
+
+
+    console.log('get img get valudes');
+    
+console.log(images);
+
+
+
+// images ? `http://localhost:8000/profile_users/${images}`
+//       : "https://i.pravatar.cc/100"
+
+if(images.length){
+  alert('get laravel path');
+}else{
+  alert('url');
+}
+
+    
   }, []);
 
 
@@ -266,22 +275,17 @@ useEffect(() => {
 
           {/* Profile Image */}
           <div className="relative">
-            <img
+ <Image
+  src={images ? `http://localhost:8000/profile_users/${images}`
+      : "https://i.pravatar.cc/100" }
+  alt="profile"
+  width={36}
+  height={36}
+  className="rounded-full cursor-pointer border border-gray-300"
+  onClick={() => setShowProfileMenu((prev) => !prev)}
+/>
 
-            src={
-                    images
-                      ? `https://localhost:8000/profile_users/${images}`
-                      : "https://i.pravatar.cc/100"
-                 
 
-            }
-         
-              alt="profile"
-              width={36}
-              height={36}
-              className="rounded-full cursor-pointer border border-gray-300"
-              onClick={() => setShowProfileMenu((prev) => !prev)}
-            />
 
             {/* Profile Popup */}
             <AnimatePresence>
