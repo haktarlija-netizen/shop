@@ -1,82 +1,96 @@
+
+
+
+
+
+
+
+// app/test/Messenger.tsx
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { Send, Smile, Menu, X, Paperclip, Check } from "lucide-react";
 import Image from "next/image";
-import { number } from "framer-motion";
 
-let socket: Socket | null = null;
-
-
-
-
-interface Product {
+type User = {
   id: number;
-  name: string;
-  model: string;
-  pricee: number;
-  reprice?: number;
-  qty: number;
-  img?: string;       // <-- যোগ করতে হবে
-  imglink?: string;   // <-- যোগ করতে হবে
-  rating?: number;
-}
+  name?: string;
+  avatar?: string;
+  online?: boolean;
+};
 
+type Message = {
+  id: number;
+  senderId: number;
+  receiverId: number;
+  content?: string;
+  file?: string | null;
+  seen?: boolean;
+};
 
 export default function Messenger() {
-  const [me] = useState({ id: 1, name: "Lija", avatar: "/me.png" });
-  const [friends, setFriends] = useState<any[]>([]);
-  const [activePeer, setActivePeer] = useState<any | null>(null);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [me] = useState<User>({ id: 1, name: "Lija", avatar: "/me.png" });
+  const [friends, setFriends] = useState<User[]>([]);
+  const [activePeer, setActivePeer] = useState<User | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [typingUser, setTypingUser] = useState<any | null>(null);
+  const [typingUser, setTypingUser] = useState<User | null>(null);
 
+  // socket ref (init only on client)
+  const socketRef = useRef<Socket | null>(null);
   const messagesRef = useRef<HTMLDivElement | null>(null);
-  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // initialize socket once on mount
   useEffect(() => {
-    // socket init
-    socket = io("http://localhost:5000", { autoConnect: true });
-
-    socket.emit("identify", String(me.id));
-
-    socket.on("receive_message", (msg: any) => {
-      if (
-        (msg.senderId === activePeer?.id && msg.receiverId === me.id) ||
-        (msg.senderId === me.id && msg.receiverId === activePeer?.id)
-      ) {
-        setMessages((prev) => [...prev, msg]);
-      }
+    // ---- init socket inside effect to avoid SSR/build issues ----
+    const s = io("http://localhost:5000", {
+      transports: ["websocket"],
+      autoConnect: true,
     });
+    socketRef.current = s;
 
-    socket.on("message_seen", (msgId: number) => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === msgId ? { ...m, seen: true } : m))
-      );
-    });
+    // identify user (server should handle this)
+    s.emit("identify", String(me.id));
 
-socket.on("typing", (user: { id: number; name?: string }) => {
-  setTypingUser(user);
-});
-
-socket.on("stop_typing", (userId: number) => {
-  setTypingUser((prev) => (prev && prev.id === userId ? null : prev));
-});
-
-
-    // ✅ cleanup
-    return () => {
-      if (socket) {
-        socket.disconnect();
-        socket = null;
-      }
+    // receive any incoming message (append globally)
+    const onReceive = (msg: Message) => {
+      setMessages((prev) => [...prev, msg]);
     };
-  }, [me.id, activePeer?.id]);
+    s.on("receive_message", onReceive);
 
+    // message seen update
+    const onSeen = (msgId: number) => {
+      setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, seen: true } : m)));
+    };
+    s.on("message_seen", onSeen);
+
+    // typing / stop_typing handlers
+    const onTyping = (user: User) => setTypingUser(user);
+    const onStopTyping = (userId: number) =>
+      setTypingUser((prev) => (prev && prev.id === userId ? null : prev));
+
+    s.on("typing", onTyping);
+    s.on("stop_typing", onStopTyping);
+
+    // cleanup on unmount
+    return () => {
+      s.off("receive_message", onReceive);
+      s.off("message_seen", onSeen);
+      s.off("typing", onTyping);
+      s.off("stop_typing", onStopTyping);
+      s.disconnect();
+      socketRef.current = null;
+    };
+    // NOTE: empty deps — we want single socket instance for component lifetime
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // sample friends (could be fetched)
   useEffect(() => {
     setFriends([
       { id: 2, name: "Rahim", avatar: "/user1.png", online: true },
@@ -85,25 +99,34 @@ socket.on("stop_typing", (userId: number) => {
     ]);
   }, []);
 
+  // auto-scroll & mark seen for active conversation
   useEffect(() => {
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
 
-    // seen mark
-    if (activePeer && socket) {
-      messages.forEach((m) => {
-        if (m.receiverId === me.id && !m.seen) {
-          socket.emit("mark_seen", m.id);
-        }
-      });
-    }
+    if (!activePeer) return;
+
+    // mark visible messages as seen
+    const visible = messages.filter(
+      (m) =>
+        (m.senderId === activePeer.id && m.receiverId === me.id) ||
+        (m.senderId === me.id && m.receiverId === activePeer.id)
+    );
+
+    visible.forEach((m) => {
+      if (m.receiverId === me.id && !m.seen) {
+        socketRef.current?.emit("mark_seen", m.id);
+        // optimistically mark seen locally (optional)
+        setMessages((prev) => prev.map((msg) => (msg.id === m.id ? { ...msg, seen: true } : msg)));
+      }
+    });
   }, [messages, activePeer, me.id]);
 
   const send = () => {
-    if ((!text.trim() && !file) || !activePeer || !socket) return;
+    if ((!text.trim() && !file) || !activePeer) return;
 
-    const msg: any = {
+    const msg: Message = {
       id: Date.now(),
       senderId: me.id,
       receiverId: activePeer.id,
@@ -112,8 +135,10 @@ socket.on("stop_typing", (userId: number) => {
       seen: false,
     };
 
-    socket.emit("send_message", msg);
-    socket.emit("stop_typing", me.id);
+    // emit and locally append
+    socketRef.current?.emit("send_message", msg);
+    socketRef.current?.emit("stop_typing", me.id);
+
     setMessages((prev) => [...prev, msg]);
     setText("");
     setFile(null);
@@ -122,27 +147,37 @@ socket.on("stop_typing", (userId: number) => {
 
   const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
-    if (!socket) return;
 
-    socket.emit("typing", me);
+    if (!socketRef.current) return;
+    socketRef.current.emit("typing", me);
 
-    if (typingTimeout.current) {
-      clearTimeout(typingTimeout.current);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
     }
 
-    typingTimeout.current = setTimeout(() => {
-      socket?.emit("stop_typing", me.id);
+    typingTimeoutRef.current = setTimeout(() => {
+      socketRef.current?.emit("stop_typing", me.id);
     }, 2000);
   };
 
+  // helper: messages for active peer
+  const visibleMessages = activePeer
+    ? messages.filter(
+        (m) =>
+          (m.senderId === activePeer.id && m.receiverId === me.id) ||
+          (m.senderId === me.id && m.receiverId === activePeer.id)
+      )
+    : [];
+
   const getLastMessage = (fid: number) => {
     const last = messages
-      .filter((m) => m.senderId === fid || m.receiverId === fid)
+      .filter(
+        (m) =>
+          (m.senderId === fid && m.receiverId === me.id) ||
+          (m.senderId === me.id && m.receiverId === fid)
+      )
       .slice(-1)[0];
-    return last
-      ? last.content.slice(0, 20) +
-          (last.content.length > 20 ? "..." : "")
-      : "No messages yet";
+    return last ? (last.content ?? "Attachment") : "No messages yet";
   };
 
   return (
@@ -150,16 +185,11 @@ socket.on("stop_typing", (userId: number) => {
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-gray-800 border-r transform transition-transform duration-300 ease-in-out 
-        lg:static lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="font-bold text-lg">Chats</h3>
-          <button
-            className="lg:hidden p-2"
-            onClick={() => setSidebarOpen(false)}
-          >
+          <button className="lg:hidden p-2" onClick={() => setSidebarOpen(false)}>
             <X />
           </button>
         </div>
@@ -176,9 +206,7 @@ socket.on("stop_typing", (userId: number) => {
 
         <div className="p-2 space-y-2 overflow-y-auto h-[calc(100vh-150px)]">
           {friends
-            .filter((f) =>
-              f.name.toLowerCase().includes(search.toLowerCase())
-            )
+            .filter((f) => f.name?.toLowerCase().includes(search.toLowerCase()))
             .map((f) => (
               <div
                 key={f.id}
@@ -187,30 +215,18 @@ socket.on("stop_typing", (userId: number) => {
                   setSidebarOpen(false);
                 }}
                 className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 ${
-                  activePeer?.id === f.id
-                    ? "bg-gray-200 dark:bg-gray-700"
-                    : ""
+                  activePeer?.id === f.id ? "bg-gray-200 dark:bg-gray-700" : ""
                 }`}
               >
                 <div className="relative">
-                  <Image
-                    src={f.avatar}
-                    alt={f.name}
-                    width={40}
-                    height={40}
-                    className="rounded-full border"
-                  />
-                  {f.online && (
-                    <span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-                  )}
+                  <Image src={f.avatar || "/user1.png"} alt={f.name || "user"} width={40} height={40} className="rounded-full border" />
+                  {f.online && <span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>}
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between">
                     <span className="font-medium">{f.name}</span>
                   </div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {getLastMessage(f.id)}
-                  </span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{getLastMessage(f.id)}</span>
                 </div>
               </div>
             ))}
@@ -222,26 +238,15 @@ socket.on("stop_typing", (userId: number) => {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-white dark:bg-gray-800">
           <div className="flex items-center gap-2">
-            <button
-              className="lg:hidden p-2"
-              onClick={() => setSidebarOpen(true)}
-            >
+            <button className="lg:hidden p-2" onClick={() => setSidebarOpen(true)}>
               <Menu />
             </button>
             {activePeer && (
               <div className="flex items-center gap-2">
-                <Image
-                  src={activePeer.avatar}
-                  alt={activePeer.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full border"
-                />
+                <Image src={activePeer.avatar || "/user1.png"} alt={activePeer.name || "user"} width={40} height={40} className="rounded-full border" />
                 <div>
                   <h2 className="text-lg font-semibold">{activePeer.name}</h2>
-                  <p className="text-sm text-gray-500">
-                    {activePeer.online ? "Active now" : "Offline"}
-                  </p>
+                  <p className="text-sm text-gray-500">{activePeer.online ? "Active now" : "Offline"}</p>
                 </div>
               </div>
             )}
@@ -249,36 +254,14 @@ socket.on("stop_typing", (userId: number) => {
         </div>
 
         {/* Messages */}
-        <div
-          className="flex-1 overflow-y-auto p-4 space-y-2"
-          ref={messagesRef}
-        >
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`flex flex-col ${
-                m.senderId === me.id ? "items-end" : "items-start"
-              }`}
-            >
-              <div
-                className={`px-4 py-2 rounded-2xl max-w-[70%] ${
-                  m.senderId === me.id
-                    ? "bg-blue-500 text-white rounded-br-none"
-                    : "bg-gray-300 dark:bg-gray-700 dark:text-white rounded-bl-none"
-                }`}
-              >
+        <div className="flex-1 overflow-y-auto p-4 space-y-2" ref={messagesRef}>
+          {visibleMessages.map((m) => (
+            <div key={m.id} className={`flex flex-col ${m.senderId === me.id ? "items-end" : "items-start"}`}>
+              <div className={`px-4 py-2 rounded-2xl max-w-[70%] ${m.senderId === me.id ? "bg-blue-500 text-white rounded-br-none" : "bg-gray-300 dark:bg-gray-700 dark:text-white rounded-bl-none"}`}>
                 {m.content && <p>{m.content}</p>}
-                {m.file && (
-                  <Image
-                    src={m.file}
-                    alt="attachment"
-                    width={200}
-                    height={200}
-                    className="mt-2 rounded-lg"
-                  />
-                )}
+                {m.file && <img src={m.file} alt="attachment" width={200} height={200} className="mt-2 rounded-lg" />}
               </div>
-              {/* Seen indicator */}
+
               {m.senderId === me.id && (
                 <span className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                   {m.seen ? (
@@ -306,37 +289,12 @@ socket.on("stop_typing", (userId: number) => {
         {/* Input */}
         {activePeer && (
           <div className="p-4 border-t bg-white dark:bg-gray-800 flex items-center gap-2 relative">
-            <button
-              onClick={() => setShowEmoji(!showEmoji)}
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-            >
+            <button onClick={() => setShowEmoji(!showEmoji)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
               <Smile />
             </button>
 
-            {/* {showEmoji && (
-              <div className="absolute bottom-16 left-4 z-50">
-                <Picker
-                  data={data}
-                  onEmojiSelect={(e: any) =>
-                    setText((prev) => prev + e.native)
-                  }
-                  theme="dark"
-                />
-              </div>
-            )} */}
-
-            <input
-              type="file"
-              onChange={(e) =>
-                setFile(e.target.files ? e.target.files[0] : null)
-              }
-              className="hidden"
-              id="fileUpload"
-            />
-            <label
-              htmlFor="fileUpload"
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
-            >
+            <input type="file" onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} className="hidden" id="fileUpload" />
+            <label htmlFor="fileUpload" className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer">
               <Paperclip />
             </label>
 
@@ -348,10 +306,7 @@ socket.on("stop_typing", (userId: number) => {
               className="flex-1 p-2 rounded-full border dark:border-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-white focus:outline-none"
             />
 
-            <button
-              onClick={send}
-              className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
-            >
+            <button onClick={send} className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600">
               <Send />
             </button>
           </div>
@@ -360,6 +315,379 @@ socket.on("stop_typing", (userId: number) => {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+// import React, { useEffect, useState, useRef } from "react";
+// import { io, Socket } from "socket.io-client";
+// import { Send, Smile, Menu, X, Paperclip, Check } from "lucide-react";
+// import Image from "next/image";
+// import { number } from "framer-motion";
+
+// let socket: Socket | null = null;
+
+
+
+
+// interface Product {
+//   id: number;
+//   name: string;
+//   model: string;
+//   pricee: number;
+//   reprice?: number;
+//   qty: number;
+//   img?: string;       // <-- যোগ করতে হবে
+//   imglink?: string;   // <-- যোগ করতে হবে
+//   rating?: number;
+// }
+
+
+// export default function Messenger() {
+//   const [me] = useState({ id: 1, name: "Lija", avatar: "/me.png" });
+//   const [friends, setFriends] = useState<any[]>([]);
+//   const [activePeer, setActivePeer] = useState<any | null>(null);
+//   const [messages, setMessages] = useState<any[]>([]);
+//   const [text, setText] = useState("");
+//   const [sidebarOpen, setSidebarOpen] = useState(false);
+//   const [search, setSearch] = useState("");
+//   const [showEmoji, setShowEmoji] = useState(false);
+//   const [file, setFile] = useState<File | null>(null);
+//   const [typingUser, setTypingUser] = useState<any | null>(null);
+
+//   const messagesRef = useRef<HTMLDivElement | null>(null);
+//   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+
+//   useEffect(() => {
+//     // socket init
+//     socket = io("http://localhost:5000", { autoConnect: true });
+
+//     socket.emit("identify", String(me.id));
+
+//     socket.on("receive_message", (msg: any) => {
+//       if (
+//         (msg.senderId === activePeer?.id && msg.receiverId === me.id) ||
+//         (msg.senderId === me.id && msg.receiverId === activePeer?.id)
+//       ) {
+//         setMessages((prev) => [...prev, msg]);
+//       }
+//     });
+
+//     socket.on("message_seen", (msgId: number) => {
+//       setMessages((prev) =>
+//         prev.map((m) => (m.id === msgId ? { ...m, seen: true } : m))
+//       );
+//     });
+
+// socket.on("typing", (user: { id: number; name?: string }) => {
+//   setTypingUser(user);
+// });
+
+// socket.on("stop_typing", (userId: number ) => {
+//   setTypingUser((prev: number) => (prev && prev.id === userId ? null : prev));
+// });
+
+
+//     // ✅ cleanup
+//     return () => {
+//       if (socket) {
+//         socket.disconnect();
+//         socket = null;
+//       }
+//     };
+//   }, [me.id, activePeer?.id]);
+
+//   useEffect(() => {
+//     setFriends([
+//       { id: 2, name: "Rahim", avatar: "/user1.png", online: true },
+//       { id: 3, name: "Karim", avatar: "/user2.png", online: false },
+//       { id: 4, name: "Jannat", avatar: "/user3.png", online: true },
+//     ]);
+//   }, []);
+
+//   useEffect(() => {
+//     if (messagesRef.current) {
+//       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+//     }
+
+//     // seen mark
+//     if (activePeer && socket) {
+//       messages.forEach((m) => {
+//         if (m.receiverId === me.id && !m.seen) {
+//           socket.emit("mark_seen", m.id);
+//         }
+//       });
+//     }
+//   }, [messages, activePeer, me.id]);
+
+//   const send = () => {
+//     if ((!text.trim() && !file) || !activePeer || !socket) return;
+
+//     const msg: any = {
+//       id: Date.now(),
+//       senderId: me.id,
+//       receiverId: activePeer.id,
+//       content: text,
+//       file: file ? URL.createObjectURL(file) : null,
+//       seen: false,
+//     };
+
+//     socket.emit("send_message", msg);
+//     socket.emit("stop_typing", me.id);
+//     setMessages((prev) => [...prev, msg]);
+//     setText("");
+//     setFile(null);
+//     setShowEmoji(false);
+//   };
+
+//   const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setText(e.target.value);
+//     if (!socket) return;
+
+//     socket.emit("typing", me);
+
+//     if (typingTimeout.current) {
+//       clearTimeout(typingTimeout.current);
+//     }
+
+//     typingTimeout.current = setTimeout(() => {
+//       socket?.emit("stop_typing", me.id);
+//     }, 2000);
+//   };
+
+//   const getLastMessage = (fid: number) => {
+//     const last = messages
+//       .filter((m) => m.senderId === fid || m.receiverId === fid)
+//       .slice(-1)[0];
+//     return last
+//       ? last.content.slice(0, 20) +
+//           (last.content.length > 20 ? "..." : "")
+//       : "No messages yet";
+//   };
+
+//   return (
+//     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+//       {/* Sidebar */}
+//       <div
+//         className={`fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-gray-800 border-r transform transition-transform duration-300 ease-in-out 
+//         lg:static lg:translate-x-0 ${
+//           sidebarOpen ? "translate-x-0" : "-translate-x-full"
+//         }`}
+//       >
+//         <div className="flex justify-between items-center p-4 border-b">
+//           <h3 className="font-bold text-lg">Chats</h3>
+//           <button
+//             className="lg:hidden p-2"
+//             onClick={() => setSidebarOpen(false)}
+//           >
+//             <X />
+//           </button>
+//         </div>
+
+//         <div className="p-3">
+//           <input
+//             type="text"
+//             placeholder="Search Messenger..."
+//             value={search}
+//             onChange={(e) => setSearch(e.target.value)}
+//             className="w-full p-2 rounded-lg border bg-gray-100 dark:bg-gray-700 dark:text-white"
+//           />
+//         </div>
+
+//         <div className="p-2 space-y-2 overflow-y-auto h-[calc(100vh-150px)]">
+//           {friends
+//             .filter((f) =>
+//               f.name.toLowerCase().includes(search.toLowerCase())
+//             )
+//             .map((f) => (
+//               <div
+//                 key={f.id}
+//                 onClick={() => {
+//                   setActivePeer(f);
+//                   setSidebarOpen(false);
+//                 }}
+//                 className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 ${
+//                   activePeer?.id === f.id
+//                     ? "bg-gray-200 dark:bg-gray-700"
+//                     : ""
+//                 }`}
+//               >
+//                 <div className="relative">
+//                   <Image
+//                     src={f.avatar}
+//                     alt={f.name}
+//                     width={40}
+//                     height={40}
+//                     className="rounded-full border"
+//                   />
+//                   {f.online && (
+//                     <span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+//                   )}
+//                 </div>
+//                 <div className="flex-1">
+//                   <div className="flex justify-between">
+//                     <span className="font-medium">{f.name}</span>
+//                   </div>
+//                   <span className="text-sm text-gray-500 dark:text-gray-400">
+//                     {getLastMessage(f.id)}
+//                   </span>
+//                 </div>
+//               </div>
+//             ))}
+//         </div>
+//       </div>
+
+//       {/* Chat Section */}
+//       <div className="flex-1 flex flex-col">
+//         {/* Header */}
+//         <div className="flex items-center justify-between p-4 border-b bg-white dark:bg-gray-800">
+//           <div className="flex items-center gap-2">
+//             <button
+//               className="lg:hidden p-2"
+//               onClick={() => setSidebarOpen(true)}
+//             >
+//               <Menu />
+//             </button>
+//             {activePeer && (
+//               <div className="flex items-center gap-2">
+//                 <Image
+//                   src={activePeer.avatar}
+//                   alt={activePeer.name}
+//                   width={40}
+//                   height={40}
+//                   className="rounded-full border"
+//                 />
+//                 <div>
+//                   <h2 className="text-lg font-semibold">{activePeer.name}</h2>
+//                   <p className="text-sm text-gray-500">
+//                     {activePeer.online ? "Active now" : "Offline"}
+//                   </p>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* Messages */}
+//         <div
+//           className="flex-1 overflow-y-auto p-4 space-y-2"
+//           ref={messagesRef}
+//         >
+//           {messages.map((m) => (
+//             <div
+//               key={m.id}
+//               className={`flex flex-col ${
+//                 m.senderId === me.id ? "items-end" : "items-start"
+//               }`}
+//             >
+//               <div
+//                 className={`px-4 py-2 rounded-2xl max-w-[70%] ${
+//                   m.senderId === me.id
+//                     ? "bg-blue-500 text-white rounded-br-none"
+//                     : "bg-gray-300 dark:bg-gray-700 dark:text-white rounded-bl-none"
+//                 }`}
+//               >
+//                 {m.content && <p>{m.content}</p>}
+//                 {m.file && (
+//                   <Image
+//                     src={m.file}
+//                     alt="attachment"
+//                     width={200}
+//                     height={200}
+//                     className="mt-2 rounded-lg"
+//                   />
+//                 )}
+//               </div>
+//               {/* Seen indicator */}
+//               {m.senderId === me.id && (
+//                 <span className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+//                   {m.seen ? (
+//                     <>
+//                       Seen <Check className="w-3 h-3 text-blue-500" />
+//                     </>
+//                   ) : (
+//                     "Sent"
+//                   )}
+//                 </span>
+//               )}
+//             </div>
+//           ))}
+
+//           {/* Typing Indicator */}
+//           {typingUser && activePeer?.id === typingUser.id && (
+//             <div className="flex justify-start">
+//               <div className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded-2xl text-gray-600 dark:text-gray-300">
+//                 <span className="animate-pulse">... typing</span>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* Input */}
+//         {activePeer && (
+//           <div className="p-4 border-t bg-white dark:bg-gray-800 flex items-center gap-2 relative">
+//             <button
+//               onClick={() => setShowEmoji(!showEmoji)}
+//               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+//             >
+//               <Smile />
+//             </button>
+
+//             {/* {showEmoji && (
+//               <div className="absolute bottom-16 left-4 z-50">
+//                 <Picker
+//                   data={data}
+//                   onEmojiSelect={(e: any) =>
+//                     setText((prev) => prev + e.native)
+//                   }
+//                   theme="dark"
+//                 />
+//               </div>
+//             )} */}
+
+//             <input
+//               type="file"
+//               onChange={(e) =>
+//                 setFile(e.target.files ? e.target.files[0] : null)
+//               }
+//               className="hidden"
+//               id="fileUpload"
+//             />
+//             <label
+//               htmlFor="fileUpload"
+//               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
+//             >
+//               <Paperclip />
+//             </label>
+
+//             <input
+//               value={text}
+//               onChange={handleTyping}
+//               onKeyDown={(e) => e.key === "Enter" && send()}
+//               placeholder="Type a message..."
+//               className="flex-1 p-2 rounded-full border dark:border-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-white focus:outline-none"
+//             />
+
+//             <button
+//               onClick={send}
+//               className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+//             >
+//               <Send />
+//             </button>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
