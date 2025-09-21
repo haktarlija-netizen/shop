@@ -431,7 +431,7 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
   <div className="mt-4 flex items-center justify-between font-semibold text-lg text-gray-900 dark:text-white">
     <div>Total</div>
     <div>
-      ৳ {cart.reduce((acc, item) => acc + ((item.pricee || 0) * (item.qty || 1)), 0)}
+      {/* ৳ {cart.reduce((acc, item) => acc + ((item.pricee || 0) * (item.qty || 1)), 0)} */}
     </div>
   </div>
 </div>
