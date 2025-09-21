@@ -44,7 +44,7 @@ export default function Messenger() {
 
     socket.on("typing", (user: any) => setTypingUser(user));
     socket.on("stop_typing", (userId: number) => {
-      setTypingUser((prev) => (prev?.id === userId ? null : prev));
+      setTypingUser((prev: number) => (prev?.id === userId ? null : prev));
     });
 
     // ✅ cleanup
