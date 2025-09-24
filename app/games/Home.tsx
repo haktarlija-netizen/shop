@@ -86,11 +86,11 @@ export default function AllCategorySection() {
 
 
     {
-      title: "গেমস",
+      title: "গেমস (jam) ",
       icon: <Gamepad2 size={36} />,
       img: "https://images.unsplash.com/photo-1606813902818-87952c3b42e0",
       color: "from-yellow-500 to-orange-600",
-         link: "/games",
+         link: "/games/jamgam",
     },
 
 

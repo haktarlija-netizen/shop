@@ -93,10 +93,11 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
 
 
 
-
+  const [producmenu, setProdumenuget] = useState<any[]>([]);
 
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loading123, setLoading11] = useState(true);
   const cartRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -168,6 +169,49 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
 
 
 
+
+
+
+
+
+
+
+
+
+    
+   
+  // 📡 API Data Load
+  useEffect(() => {
+    const fetchData2 = async () => {
+      if (!currentCategory) return;
+      setLoading11(true);
+      try {
+        const res = await Api.get(`/get_all_product_brandName/${barnds}/${currentCategory}`);
+        setProdumenuget(res.data.message);
+        console.log(res.data.message);
+        console.log('this a get bran name  get menu name list ');
+      } catch (err) {
+        console.error('❌ Fetch error:', err);
+      } finally {
+        setLoading11(false);
+      }
+    };
+setInterval(() => {
+  
+
+  fetchData2();
+
+}, 3000);
+    
+
+    // প্রতি 3 সেকেন্ডে আপডেট চাইলে
+    
+  }, [currentCategory]);
+
+
+
+
+
   // Fetch products
   useEffect(() => {
     const fetchData = async () => {
@@ -206,7 +250,7 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
     return () => window.removeEventListener('mousemove', moveCursor);
   }, []);
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>, Product:Product) => {
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>, Product: any) => {
     const item = e.currentTarget.getBoundingClientRect();
     const bag = cartRef.current?.getBoundingClientRect();
     if (!bag) return;
@@ -231,6 +275,8 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
       flyingItem.remove();
       setCartCount((prev) => prev + 1);
 
+      addToCart(Product);
+
 
 
     }, 800);
@@ -238,7 +284,9 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
 
     
   };
-  
+
+
+
 
   if (loading) {
     return (
@@ -506,11 +554,21 @@ export default function CyberNeonParallax({ product }: { product: Product }) {
                   </button>
                 </div>
                 <div className="mt-6 space-y-3">
-                  <a className="block py-2 rounded hover:bg-white/20">Home</a>
+                  {/* <a className="block py-2 rounded hover:bg-white/20">Home</a>
                   <a className="block py-2 rounded hover:bg-white/20">Shop</a>
                   <a className="block py-2 rounded hover:bg-white/20">Categories</a>
                   <a className="block py-2 rounded hover:bg-white/20">Orders</a>
-                  <a className="block py-2 rounded hover:bg-white/20">Settings</a>
+                  <a className="block py-2 rounded hover:bg-white/20">Settings</a> */}
+
+                ``  
+                
+                 {producmenu.map((user) => (
+        <a    href={`/products/${currentCategory}/${user.catagori}/${user.brand}`}  className="block py-2 rounded text-blue hover:bg-white/20">{user.brand}</a>
+      ))}
+       
+                
+                
+                
                 </div>
               </motion.nav>
             </>

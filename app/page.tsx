@@ -23,7 +23,9 @@ import {
   Star,
   Flame,
    LogIn, LogOut, 
-   User
+   User,
+   Coins,
+   MessageCircleIcon
 } from "lucide-react";
 import {
   AreaChart,
@@ -35,6 +37,8 @@ import {
 } from "recharts";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import CountUp from "react-countup";
+import { FaFacebook } from "react-icons/fa";
 
 
 
@@ -124,9 +128,9 @@ function cn(...classes: Array<string | false | null | undefined>) {
 export default function HomeShowcasePage() {
 
 
+const [coissnss, setCoins] = useState<number>(0);
 
-
-  const [cojns, setCoins]=useState('0');
+ 
   const [dark, setDark] = useState(false);
   const [q, setQ] = useState("");
   const [activeCat, setActiveCat] = useState("all");
@@ -183,9 +187,11 @@ console.log(images);
 //       : "https://i.pravatar.cc/100"
 
 if(images.length){
-  alert('get laravel path');
+ console.log('log iage lenst show ');
+ 
 }else{
-  alert('url');
+ console.log('logout else img lenght ');
+
 }
 
     
@@ -216,7 +222,7 @@ useEffect(() => {
     
  const userData = localStorage.getItem('coin');
     if (userData) {
-      setCoins(userData|| '000.00  ');
+    setCoins(Number(userData) || 0.0);
       
     }
 
@@ -263,10 +269,40 @@ useEffect(() => {
             />
           </div>
 
-          {cojns}
+
+            <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      className="flex items-center gap-1 px-3 py-1 rounded-full cursor-pointer
+                      border border-yellow-600 bg-black 
+                      [box-shadow:0_0_1px_#ff0,0_0_5px_#ff0,inset_0_0_1px_#ff0]"
+                    >
+          
+          
+          
+                      
+                      <Coins className="w-4 h-4 text-yellow-300" />
+                      <span className="font-semibold text-yellow-200">
+                        <CountUp end={coissnss} duration={2} separator="," /> R
+                      </span>
+                    </motion.div>
 
           {/* Dark Mode Toggle */}
           <button
+            className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+     onClick={() => window.location.href ='/test' }
+          >
+<FaFacebook className="h-5 w-5" />
+          </button>
+
+
+ <button
+            className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+            onClick={() => setDark((d) => !d)}
+          >
+            {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+
+           <button
             className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
             onClick={() => setDark((d) => !d)}
           >

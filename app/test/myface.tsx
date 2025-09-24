@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, User, Coins, MoreVertical, ThumbsUp, MessageCircle, Share2 } from "lucide-react";
+import { Bell, Search, User, Coins, MoreVertical, ThumbsUp, MessageCircle, Share2,  } from "lucide-react";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 
@@ -68,14 +68,40 @@ export default function FbFeedNeon() {
             border border-yellow-400 bg-black 
             [box-shadow:0_0_15px_#ff0,0_0_30px_#ff0,inset_0_0_10px_#ff0]"
           >
+
+
+
+
             <Coins className="w-4 h-4 text-yellow-300" />
             <span className="font-semibold text-yellow-200">
               <CountUp end={2500} duration={2} separator="," /> R
             </span>
           </motion.div>
 
+
+
+
+
+
+
+
+
+
+
+
+
           <Bell className="w-6 h-6 cursor-pointer text-cyan-300 hover:text-cyan-400 
           [text-shadow:0_0_10px_#0ff,0_0_20px_#0ff]" />
+
+
+     <MessageCircle className="w-6 h-6 cursor-pointer text-cyan-300 hover:text-cyan-400 
+          [text-shadow:0_0_10px_#0ff,0_0_20px_#0ff]" 
+
+onClick={() => window.location.href ='test/messanger' }
+
+/>
+
+
           <User className="w-6 h-6 cursor-pointer text-green-300 hover:text-green-400 
           [text-shadow:0_0_10px_#0f0,0_0_20px_#0f0]" />
         </div>
