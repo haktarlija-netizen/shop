@@ -25,7 +25,9 @@ import {
    LogIn, LogOut, 
    User,
    Coins,
-   MessageCircleIcon
+   MessageCircleIcon,
+   AlertTriangle,
+   Bell
 } from "lucide-react";
 import {
   AreaChart,
@@ -45,6 +47,25 @@ import { FaFacebook } from "react-icons/fa";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Demo data
 const marketData = Array.from({ length: 24 }).map((_, i) => ({
   time: `${i}:00`,
@@ -52,10 +73,10 @@ const marketData = Array.from({ length: 24 }).map((_, i) => ({
 }));
 
 const tickers = [
-  { symbol: "RCN", name: "R Coin", price: 12.45, change: +2.3 },
-  { symbol: "BANGLA", name: "Bangla Index", price: 245.7, change: -0.8 },
-  { symbol: "TECHA", name: "Tech A", price: 78.12, change: +1.1 },
-  { symbol: "FOODA", name: "Food A", price: 33.6, change: +0.4 },
+  { symbol: "R-coin", name: "R Coin", price: 15.0, change: +2.3 },
+  { symbol: "G-coin", name: "G-coin", price: 1.0, change: -0.8 },
+  { symbol: "M-coin", name: "M-coin", price: 2.0, change: +1.1 },
+  { symbol: "P-coin", name: "P-coin", price: 2.0, change: +0.4 },
 ];
 
 const categories = [
@@ -115,6 +136,21 @@ const allProducts = [
   },
 ];
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Fade animation helper
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -124,6 +160,26 @@ const fadeUp = (delay = 0) => ({
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
+
+
+
+// সঠিক ফরম্যাট ফাংশন
+function formatNumber(num: number): string {
+  if (!num) return '0';
+  if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(1).replace(/\.0$/, "") + "B";
+  }
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  }
+  return num.toString();
+}
+
+
+
 
 export default function HomeShowcasePage() {
 
@@ -215,20 +271,40 @@ alert('logout');
 }
 }
 
-useEffect(() => {
 
 
 
-    
- const userData = localStorage.getItem('coin');
-    if (userData) {
-    setCoins(Number(userData) || 0.0);
-      
-    }
+  useEffect(() => {
+    // coins আপডেট করার ফাংশন
+    const updateCoins = () => {
+      const userData = localStorage.getItem("coin");
+      if (userData) {
+        const coinsNumber = Number(userData) || 0;
+        setCoins(coinsNumber);
+      }
+    };
+
+    // প্রথমবার রান
+    updateCoins();
+
+    // প্রতি 1 সেকেন্ডে চেক করবে
+    const interval = setInterval(updateCoins, 1000);
+
+    return () => clearInterval(interval); // cleanup
+  }, []);
 
 
 
-}, [])
+  // useEffect(() => {
+  //   const userData = localStorage.getItem("coin");
+  //   if (userData) {
+  //     const coinsNumber = Number(userData) || 0;
+  //     setCoins(formatNumber(coinsNumber));
+  //   }
+  // }, []);
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
@@ -282,7 +358,7 @@ useEffect(() => {
                       
                       <Coins className="w-4 h-4 text-yellow-300" />
                       <span className="font-semibold text-yellow-200">
-                        <CountUp end={coissnss} duration={2} separator="," /> R
+                        <CountUp end={(formatNumber(coissnss))} duration={2} separator="," /> R
                       </span>
                     </motion.div>
 
@@ -292,6 +368,7 @@ useEffect(() => {
      onClick={() => window.location.href ='/test' }
           >
 <FaFacebook className="h-5 w-5" />
+
           </button>
 
 
@@ -299,7 +376,7 @@ useEffect(() => {
             className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
             onClick={() => setDark((d) => !d)}
           >
-            {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            <Bell className="h-5 w-5" /> 
           </button>
 
            <button
@@ -370,11 +447,20 @@ useEffect(() => {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <button className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                <Home className="h-4 w-4" /> শুরু করুন
+        
+
+   <div className="relative hidden md:block">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+            <input
+              className="pl-9 w-[300px] py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="আপনার আইডি বা মোবাইল নাম্বার দিন  "
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
+        
               </button>
-              <button className="flex items-center gap-1 px-4 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                <ChevronRight className="h-4 w-4" /> সব ক্যাটাগরি
-              </button>
+              
             </div>
           </motion.div>
 
@@ -383,9 +469,80 @@ useEffect(() => {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden">
               <div className="p-4 border-b">
                 <div className="flex items-center gap-2 font-semibold">
-                  <LineIcon className="h-5 w-5" /> লাইভ মার্কেট স্ন্যাপশট
+                  <LineIcon className="h-5 w-5" /> লাইভ মার্কেট কয়েন প্রাইজ
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">ডেমো ডাটা — আপনার API যুক্ত করুন</div>
+
+
+
+
+
+{/* 
+ <div
+      style={{
+        background: "#7f1d1d",
+        color: "#fff",
+        padding: "12px 16px",
+        borderRadius: "8px",
+        display: "flex",
+        gap: "12px",
+        alignItems: "center",
+        fontWeight: 600,
+      }}
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M12 9v4"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M12 17h.01"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10.29 3.86L1.82 18a1.5 1.5 0 0 0 1.29 2.25h17.78a1.5 1.5 0 0 0 1.29-2.25L13.71 3.86a1.5 1.5 0 0 0-2.42 0z"
+          stroke="currentColor"
+          strokeWidth="0"
+          fill="currentColor"
+        />
+      </svg>
+
+      <div>
+        বিজ্ঞপ্তি: এই কয়েন কেবলমাত্র নিবন্ধিত মালিককে পাঠাবেন — অন্যকে দিলে আপনার
+        একাউন্ট বাতিল করা হবে।
+      </div>
+    </div> */}
+
+
+
+
+
+
+
+ <div className="bg-red-900 text-white px-4 py-3 rounded-lg flex items-center gap-3 font-semibold shadow-md">
+      <AlertTriangle className="w-5 h-5 text-yellow-300" />
+      <p>
+        বিজ্ঞপ্তি: এই কয়েন কেবলমাত্র নিবন্ধিত মালিককে পাঠাবেন — অন্যকে দিলে আপনার
+        একাউন্ট বাতিল করা হবে।
+      </p>
+    </div>
+
+
+
+
+
               </div>
               <div className="p-4">
                 <div className="h-44">
