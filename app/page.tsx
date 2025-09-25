@@ -359,7 +359,7 @@ alert('logout');
                       
                       <Coins className="w-4 h-4 text-yellow-300" />
                       <span className="font-semibold text-yellow-200">
-                        <CountUp end={(formatNumber(coissnss))} duration={2} separator="," /> R
+                        <CountUp end={coissnss} duration={2} separator="," /> R
                       </span>
                     </motion.div>
 
