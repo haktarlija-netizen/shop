@@ -521,7 +521,7 @@ setInterval(() => {
 
   {/* Checkout Button */}
   <button
-   onClick={() => window.location.href = 'checkout/order'}
+   onClick={() => window.location.href = '/checkout/order'}
                 
   className="w-full mt-4 py-2 rounded-full bg-gradient-to-r from-yellow-400 to-pink-500 hover:opacity-90">
     Checkout

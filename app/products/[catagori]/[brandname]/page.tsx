@@ -84,8 +84,9 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 
                 
-                />
-/>
+                 onClick={() => window.location.href = `/products/${currentCategory}/${product.catagori}/${product.brand}`}
+              
+              />
               </div>
 
               {/* Overlay Text */}
