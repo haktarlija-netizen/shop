@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence,  } from "framer-motion";
 import Homepages from './Home'
 import Footers from './footers/page'
+import FSearcModel from './test/Search'
 
 import {
   Home,
@@ -589,6 +590,8 @@ alert('logout');
         </div>
       </section>
 <Homepages />
+
+<FSearcModel />
       <Footers />
 
       {/* Quick Apps & Products & CTA & Footer */}
