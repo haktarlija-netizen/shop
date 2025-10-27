@@ -1,4 +1,12 @@
 
+
+
+
+
+
+
+
+
 'use client';
 
 import { useEffect, useState } from "react";
@@ -438,3 +446,38 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 // }
 
 
+
+
+
+
+// 'use client';
+
+
+// import React from 'react'
+// import  Prodcutdev from '../page'
+// import { useParams } from 'next/navigation';
+// import Seos from '../Seo'
+
+
+// export default function page() {
+
+
+//   const params = useParams();
+//     const currentCategory = params?.id as Number | undefined;
+//   return (
+//     <div>
+
+//       {/* <Seos />
+//       <h3>lsjfl</h3>
+
+
+
+//       {currentCategory} */}
+
+
+// <Prodcutdev />
+
+
+//     </div>
+//   )
+// }

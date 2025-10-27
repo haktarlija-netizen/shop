@@ -311,7 +311,7 @@ alert('logout');
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
       {/* Topbar */}
       
-       <div className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-gray-900/70 border-b">
+       <div className="sticky top-0 z-40 backdrop-blur  dark:bg-gray-900/70 border-b">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Left Side */}
