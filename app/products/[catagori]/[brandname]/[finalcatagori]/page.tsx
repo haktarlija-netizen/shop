@@ -693,13 +693,13 @@ setInterval(() => {
 
               {/* Buttons */}
               <div className="mt-3 flex justify-center gap-2 flex-wrap">
-                <Link
-                  href={`/products-view/${product.id}}`}
+                <a                                href={`/products-view/${product.id}`}
+                 
                   className="flex items-center gap-1 px-3 py-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_0_12px_rgba(0,255,255,0.8)] hover:scale-110 transition"
                 >
                   <Eye className="w-4 h-4 drop-shadow-[0_0_6px_rgba(0,255,255,0.8)]" />
                   View
-                </Link>
+                </a>
                 <button
                   onClick={(e)=> handleAddToCart(e,product)}
                   className="flex items-center gap-1 px-3 py-1 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold shadow-[0_0_15px_rgba(255,0,255,0.9)] hover:scale-110 transition"

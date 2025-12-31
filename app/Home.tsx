@@ -2,9 +2,10 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, TrendingUp, Gamepad2, Gift, Layers } from "lucide-react";
+import { ShoppingBag, TrendingUp, Gamepad2, Gift, Layers, HeartIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { FaFemale, FaMale } from "react-icons/fa";
 
 // টাইপস
 type Particle = {
@@ -74,6 +75,19 @@ export default function AllCategorySection() {
       color: "from-red-500 to-pink-600",
       link: "/Lottery",
     },
+
+{
+  title: "বিবাহ বন্ধন বা ঘটক",
+  icon: (
+    <>
+      <FaMale size={36} style={{position:'absolute',marginLeft:'22px'}} />
+      <FaFemale size={36} />
+    </>
+  ),
+  img: "https://images.unsplash.com/photo-1603297631957-4b2c6313f93e",
+  color: "from-red-500 to-pink-600",
+  link: "/nikah",
+},
     {
       title: "অন্য সেবা",
       icon: <Layers size={36} />,
@@ -88,7 +102,7 @@ export default function AllCategorySection() {
     "#FF3CFF",
     "#00FFFF",
     "#FFAA00",
-    "#FF0055",
+    " #FF0055",
     "#00FFAA",
     "#FF33AA",
     "#33FFAA",
