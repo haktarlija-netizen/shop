@@ -104,19 +104,19 @@ export default function NikahPage() {
         {/* STEP 1 */}
         {step === 1 && (
           <div className="text-center">
-            <h2 className="mb-4">Groom / Bride নির্বাচন করুন</h2>
+            <h2 className="mb-4">পাত্র / পাত্রী  নির্বাচন করুন</h2>
             <div className="flex justify-center gap-6">
               <SelectCard
                 icon={<FaMale size={36} />}
-                label="Groom"
+                label="পাত্র"
                 color="emerald"
-                onClick={() => { setRole("Groom"); setStep(2); }}
+                onClick={() => { setRole("পাত্র"); setStep(2); }}
               />
               <SelectCard
                 icon={<FaFemale size={36} />}
-                label="Bride"
+                label="পাত্রী"
                 color="pink"
-                onClick={() => { setRole("Bride"); setStep(2); }}
+                onClick={() => { setRole("পাত্রী"); setStep(2); }}
               />
             </div>
           </div>
