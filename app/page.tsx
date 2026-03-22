@@ -232,7 +232,7 @@ const [users, setUsers] = useState([]);
     
     const userData = JSON.parse(localStorage.getItem('userData') || '[]');
     if (userData[0]) {
-      setNames(userData[0].name || 'Guest');
+      setNames(userData[0].name || 'test-name');
       setImages(userData[0].img || '');
     }
 
@@ -262,6 +262,24 @@ if(images.length){
 
 
 
+  const handleLogout = () => {
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+  if (confirmLogout) {
+    localStorage.removeItem("userData");
+
+    alert("Logout successful ✅");
+
+    // 👉 redirect
+    window.location.href = "/Login";
+  } else {
+    alert("Logout cancelled ❌");
+  }
+};
+
+
+
+
 const  hander_redires=(id: string)=>{
 if(id=='Login'){
 
@@ -269,12 +287,18 @@ redirect('/Login');
 }else if(id=='profile'){
 
 redirect('/profile');
-}else{
+}else if(id=='Logout'){
 
 alert('logout');
 }
 }
 
+
+// const userData = JSON.parse(localStorage.getItem('userData') || '[]');
+
+// if (userData.length > 0) {
+//   setUsername(userData[0]?.name || 'set-img');
+// }
 
 
 
@@ -433,7 +457,7 @@ alert('logout');
                   <button onClick={()=>hander_redires('Login')}  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
                     <LogIn size={16}  /> Login
                   </button>
-                  <button onClick={()=>hander_redires('logout')} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                  <button onClick={()=>handleLogout('Logout')} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
                     <LogOut size={16}   /> Logout
                   </button>
                 </motion.div>

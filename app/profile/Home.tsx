@@ -49,7 +49,7 @@ useEffect(() => {
  
    const userData = JSON.parse(localStorage.getItem('userData') || '[]');
     if (userData[0]) {
-      setUsername(userData[0].name || 'Guest');
+      setUsername(userData[0].name || 'set-img');
      
     }
 
