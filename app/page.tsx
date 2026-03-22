@@ -262,7 +262,7 @@ if(images.length){
 
 
 
-  const handleLogout = () => {
+  const handleLogout = (id: string)=>{
   const confirmLogout = window.confirm("Are you sure you want to logout?");
 
   if (confirmLogout) {
