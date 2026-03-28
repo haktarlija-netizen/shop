@@ -225,8 +225,8 @@ const [coissnss, setCoins] = useState<number>(0);
 
 
 const [users, setUsers] = useState([]);
-  const [names, setNames] = useState([]);
-  const [images, setImages] = useState([]);
+  const [names, setNames] = useState(null);
+  const [images, setImages] = useState('');
 
   useEffect(() => {
     
@@ -267,7 +267,7 @@ if(images.length){
 
   if (confirmLogout) {
     localStorage.removeItem("userData");
-
+setNames(null);
     alert("Logout successful ✅");
 
     // 👉 redirect
@@ -287,9 +287,6 @@ redirect('/Login');
 }else if(id=='profile'){
 
 redirect('/profile');
-}else if(id=='Logout'){
-
-alert('logout');
 }
 }
 
@@ -423,11 +420,11 @@ alert('logout');
 
           {/* Profile Image */}
           <div className="relative">
-<Image
+<img
   src={
     images
       ? `http://localhost:8000/profile_users/${images}`
-      : "https://i.pravatar.cc/100"
+      : `https://i.pravatar.cc/100`
   }
   alt="profile"
   width={36}
@@ -449,17 +446,52 @@ alert('logout');
                 >
 
 
-                    <button onClick={()=>hander_redires('profile')}  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                    
+{
+  names ? (
+
+    <>
+   
+
+
+
+
+
+       <p className="mt-2 text-sm  text-orange opacity-80">Hello, {names}!</p>
+
+      <button onClick={()=>hander_redires('profile')} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded"> 
                     <User size={16}  /> profile
                   </button>
 
 
-                  <button onClick={()=>hander_redires('Login')}  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                    <LogIn size={16}  /> Login
-                  </button>
-                  <button onClick={()=>handleLogout('Logout')} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                    <LogOut size={16}   /> Logout
-                  </button>
+    <button onClick={() => handleLogout('Logout')}  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded"> 
+       <LogOut size={16} /> Logout
+    
+    </button>
+
+
+
+
+    </>
+
+    
+  ) : (
+
+    <>
+    
+
+
+
+    
+    <button onClick={() => hander_redires('Login')} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">         
+        <LogIn size={16} /> Login
+      </button>
+
+    </>
+  )
+}
+
+                  
                 </motion.div>
               )}
             </AnimatePresence>

@@ -39,11 +39,22 @@ export default function HoldToConfirmButton() {
     }
   }
 
+
+
+
+console.log('this order get data check 266      ?????????????????????????????????')
+console.log(alldatasent)
+console.log(alldatasent)
+
+
+
   const handleSubmit = async () => {
     try {
       const res = await Api.post('/order_card', alldatasent)
       if (res.data) {
         toast.success('অর্ডার সম্পন্ন হয়েছে ✅ আপনাকে ধন্যবাদ!')
+
+
       } else {
         console.log(res.data)
       }
@@ -56,8 +67,8 @@ export default function HoldToConfirmButton() {
     const proDucts = JSON.parse(localStorage.getItem('cart-storage') || '{}')
 
     if (proDucts?.state) {
-      console.log('Products:', proDucts.state.items)
-      setAllCartdata(proDucts.state)
+      console.log('Products:', proDucts.state.Cart)
+      setAllCartdata(proDucts.state.cart)
     }
 
     if (count === 0) {
